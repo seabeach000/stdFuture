@@ -7,6 +7,8 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/filesystem.hpp>
 
+#include "../utility/utf8conv.h"
+
 //using namespace boost;
 
 CBoostClasstest::CBoostClasstest()
@@ -50,7 +52,8 @@ void CBoostClasstest::FileParser(const std::wstring& strFileName)
 	{
 		auto initialPath = fs::initial_path<fs::path>().wstring();
 		std::wifstream file(initialPath + _T("\\") + strFileNameTem);
-		boost::property_tree::read_xml(file, pt, boost::property_tree::xml_parser::trim_whitespace | boost::property_tree::xml_parser::no_comments);
+		//boost::property_tree::read_xml(file, pt, boost::property_tree::xml_parser::trim_whitespace | boost::property_tree::xml_parser::no_comments);
+		boost::property_tree::read_xml(file, pt, boost::property_tree::xml_parser::trim_whitespace);
 		auto paths = pt.get_child(L"configuration.paths");
 		std::wstring mediaPath = paths.get<std::wstring>(L"media-path", L"F:\\clips");
 		std::wcout << mediaPath << std::endl;
@@ -58,17 +61,12 @@ void CBoostClasstest::FileParser(const std::wstring& strFileName)
 		paths.put(L"media-path", L"M:\\clips");
 		std::wstring mediaPath01 = paths.get<std::wstring>(L"media-path", L"F:\\clips");
 		std::wcout << mediaPath01 << std::endl;
-		//locale current_locale(locale(""), new program_options::detail::utf8_codecvt_facet());
 		xml_parser::xml_writer_settings<std::wstring> settings(' ', 3 , _T("utf-8"));
-		//boost::property_tree::write_xml(file, pt, std::locale(), settings);
 		//std::wstringstream fileName(initialPath + _T("\\") + strFileNameTem);
-		//std::wstringstream fileName;/*(L"abc.txt")*/;
-		//fileName << L"abc.txt";
-		std::string fileName = "abc.txt";
+		std::string fileName = utf8util::UTF8FromUTF16(initialPath + _T("\\") + strFileNameTem);
 		//std::wcout << fileName.str().c_str() << std::endl;
 		pt.put_child(L"configuration.paths",paths);
 		boost::property_tree::xml_parser::write_xml(fileName, pt,std::locale(),settings);
-		//std::wcout << fileName.str().c_str() << std::endl;
 
 	}
 	catch (...)

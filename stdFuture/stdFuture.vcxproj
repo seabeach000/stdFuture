@@ -195,6 +195,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\utility\utf8conv.h" />
+    <ClInclude Include="..\utility\utf8conv_inl.h" />
     <ClInclude Include="BoostClasstest.h" />
     <ClInclude Include="Lambdatest.h" />
     <ClInclude Include="Resource.h" />
