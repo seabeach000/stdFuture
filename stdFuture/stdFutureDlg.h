@@ -64,4 +64,5 @@ public:
 	afx_msg void OnBnClickedButtonBthread();
 	afx_msg void OnBnClickedButtonlambada();
 	afx_msg void OnBnClickedButtonStaticvariable();
+	afx_msg void OnBnClickedButtoncplus();
 };

@@ -48,6 +48,9 @@
     <ClInclude Include="..\utility\utf8conv_inl.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PlusPlus11.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdFuture.cpp">
@@ -66,6 +69,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="StaticTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlusPlus11.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

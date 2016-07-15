@@ -8,7 +8,7 @@
 #include "afxdialogex.h"
 #include <boost/thread/thread.hpp>
 #include "StaticTest.h"
-
+#include "PlusPlus11.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CstdFutureDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_BThread, &CstdFutureDlg::OnBnClickedButtonBthread)
 	ON_BN_CLICKED(IDC_BUTTON_lambada, &CstdFutureDlg::OnBnClickedButtonlambada)
 	ON_BN_CLICKED(IDC_BUTTON_StaticVariable, &CstdFutureDlg::OnBnClickedButtonStaticvariable)
+	ON_BN_CLICKED(IDC_BUTTONCPlus, &CstdFutureDlg::OnBnClickedButtoncplus)
 END_MESSAGE_MAP()
 
 
@@ -355,4 +356,15 @@ void CstdFutureDlg::OnBnClickedButtonStaticvariable()
 	staticVariableTest1.localStatic();
 	CStaticTest staticVariableTest2;
 	staticVariableTest2.localStatic();
+}
+
+
+void CstdFutureDlg::OnBnClickedButtoncplus()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CPlusPlus11 cllTest;
+	cllTest.stdmove();
+	cllTest.autoTest();
+	cllTest.decltypeTest();
+
 }
