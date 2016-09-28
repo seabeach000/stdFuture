@@ -5,5 +5,6 @@ public:
 	CStaticTest();
 	virtual ~CStaticTest();
 	void localStatic(void);
+	void mapTest();
 };
 

@@ -176,6 +176,16 @@ void CstdFutureDlg::print_int(std::future<int>& fut)
 	std::cout << "value:" << x << '\n';
 }
 
+// a non-optimized way of checking for prime numbers:
+bool
+is_prime(int x)
+{
+	for (int i = 2; i < x; ++i)
+		if (x % i == 0)
+			return false;
+	return true;
+}
+
 void CstdFutureDlg::OnBnClickedButtonfuture()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -184,9 +194,29 @@ void CstdFutureDlg::OnBnClickedButtonfuture()
 	std::future<int> fut = prom.get_future(); // 获取promise内部的future，fut将和promise共享promise中的共享状态，该共享状态用于返回计算结果
 	CstdFutureDlg futuretest;
 	std::thread th1(&CstdFutureDlg::print_int, &futuretest, std::ref(fut));
+	{
+		Sleep(10);
+	}
 	prom.set_value(10);
-
 	th1.join();
+
+	//wxg20160908
+	// call is_prime(313222313) asynchronously:
+	std::future<bool> fut01 = std::async(is_prime, 313222313);
+
+	std::cout << "Checking whether 313222313 is prime.\n";
+	// ...
+
+	// do something while waiting for function to set future:
+	std::cout << "checking, please wait";
+	std::chrono::milliseconds span(100);
+	while (fut01.wait_for(span) == std::future_status::timeout)
+		std::cout << '.';
+
+	bool ret = fut01.get();      // waits for is_prime to return
+
+	if (ret) std::cout << "It is prime!\n";
+	else std::cout << "It is not prime.\n";
 
 }
 
@@ -356,6 +386,9 @@ void CstdFutureDlg::OnBnClickedButtonStaticvariable()
 	staticVariableTest1.localStatic();
 	CStaticTest staticVariableTest2;
 	staticVariableTest2.localStatic();
+
+	//wxg20160928
+	staticVariableTest2.mapTest();
 }
 
 

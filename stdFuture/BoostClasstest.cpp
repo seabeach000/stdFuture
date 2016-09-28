@@ -35,9 +35,16 @@ int CBoostClasstest::simpleThread()
 	boost::thread thrd(&CBoostClasstest::hello,this);  //这就有个问题，怎么绑定hello的重载函数呢？
 	thrd.join();
 
+	thrd = boost::thread(&CBoostClasstest::hello,this);
+	thrd.join();
+
 	boost::function0<void> f = boost::bind(&CBoostClasstest::hello, this);
 	boost::thread thrd0(f);
 	thrd0.join();
+	thrd0.join();  //验证多次join会不会有问题
+
+	boost::thread testThread;
+	testThread.join();  //验证现场没有启动会不会等待
 
 	return 0;
 }
