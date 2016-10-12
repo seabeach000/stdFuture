@@ -358,9 +358,8 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 void CstdFutureDlg::OnBnClickedButtonBthread()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	m_BoostClassTest.Convert16StringTodata();
 	m_BoostClassTest.FileParser(_T(""));
-
-
 	m_BoostClassTest.simpleThread();
 
 	//用类内部函数在类外创建线程

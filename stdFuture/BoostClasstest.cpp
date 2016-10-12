@@ -7,6 +7,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/filesystem.hpp>
 
+#include <boost/lexical_cast.hpp>
 #include "../utility/utf8conv.h"
 
 //using namespace boost;
@@ -82,4 +83,19 @@ void CBoostClasstest::FileParser(const std::wstring& strFileName)
 		throw;
 	}
 
+}
+
+template <typename ElemT>
+struct HexTo {
+	ElemT value;
+	operator ElemT() const { return value; }
+	friend std::wistream& operator >> (std::wistream& in, HexTo& out) {
+		in >> std::hex >> out.value;
+		return in;
+	}
+};
+void CBoostClasstest::Convert16StringTodata()
+{
+	int x = boost::lexical_cast<HexTo<int>>(L"10");
+	int a = 0;
 }

@@ -10,5 +10,6 @@ public:
 	void helloWorld(std::string& str);
 	int  simpleThread();
 	void  FileParser(const std::wstring& strFileName);
+	void  Convert16StringTodata();
 };
 
