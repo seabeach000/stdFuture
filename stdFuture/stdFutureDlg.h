@@ -11,6 +11,7 @@
 #include<algorithm>
 #include "BoostClasstest.h"
 #include "Lambdatest.h"
+#include "BoostSharedMemory.h"
 //start全局定义函数都写在这里
 typedef std::function<void ()> fp;
 
@@ -45,6 +46,7 @@ protected:
 
 public:
 	CBoostClasstest m_BoostClassTest;
+	CBoostSharedMemory m_BoostShareMem;
 	CLambdatest m_lambdaTest;
 public:
 	//future

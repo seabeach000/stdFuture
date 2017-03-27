@@ -10,5 +10,6 @@ public:
 	void stdmove();
 	void lValueRvalue();
 	void stdforward();
+	void variableArray(unsigned int x, unsigned int y);
 };
 

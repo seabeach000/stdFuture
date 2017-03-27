@@ -4,6 +4,8 @@
 #include <functional>
 #include <list>
 #include <string>
+#include <vector>
+#include <array>
 using namespace std;
 CPlusPlus11::CPlusPlus11()
 {
@@ -41,7 +43,7 @@ void CPlusPlus11::decltypeTest()
 	double pi = 3.14;
 	const M* m = new M();
 	decltype((m->x)) piRef = pi;
-
+	cout << typeid(piRef).name() << endl; // This will print int
 	// Note: Due to the inner bracets the inner statement is evaluated as expression,  
 	// rather than member 'x' and as type of x is double and as this is lvale  
 	// the return of declspec is double& and as 'm' is a const pointer   
@@ -59,6 +61,32 @@ void CPlusPlus11::decltypeTest()
 
 void CPlusPlus11::autoTest()
 {
+	//wxg20170321
+	int MAX_THREADS = 16;
+	int count = 4;
+	std::array<std::vector<int>, 16> jobs;
+	for (int n = 0; n < count; ++n)
+		jobs[n*MAX_THREADS / count].push_back(n);
+	for (int i = 0;i<MAX_THREADS;++i)
+	{
+		for (auto k:jobs[i])
+		{
+			std::cout << "k= " << k << " jobs[" << i << "]= " << jobs[i][0] << std::endl;
+		}
+	}
+	std::vector<int> vec;
+	vec.push_back(1);
+	vec.push_back(2);
+	vec.push_back(3);
+	//vec.insert()
+	//vec.erase()
+	cout << vec.front() << " " << vec.back() << endl;
+	//把vector里面的东西遍历一遍，上面是因为vector里面只有一个元素
+	for (auto kk:vec)
+	{
+		cout << kk << endl;
+	}
+	////////////////////////////////////////////////////////////////
 	auto a = 12;
 	auto b = 12.0f;
 	auto c = true;
@@ -226,3 +254,16 @@ void CPlusPlus11::stdforward()
 	outer(b, 3);
 	outer(3, b);
 }
+
+void CPlusPlus11::variableArray(unsigned int x, unsigned int y)
+{
+	const int t = 10;
+	int a[t];
+}
+
+//void variableArray(int x, int y)
+//{
+//	int t = 0;
+//	std::cin >> t;
+//	int b[10];
+//}

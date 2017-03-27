@@ -358,6 +358,9 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 void CstdFutureDlg::OnBnClickedButtonBthread()
 {
 	// TODO: 在此添加控件通知处理程序代码
+
+	//wxg20170215
+	//m_BoostShareMem.file_mapping_test_01();//共享内存正常
 	m_BoostClassTest.Convert16StringTodata();
 	m_BoostClassTest.FileParser(_T(""));
 	m_BoostClassTest.simpleThread();
@@ -366,6 +369,13 @@ void CstdFutureDlg::OnBnClickedButtonBthread()
 	std::string str = ("Hello World, I'm a thread!");
 	boost::thread thrd(boost::bind(&CBoostClasstest::helloWorld, &m_BoostClassTest, str));
 	thrd.join();
+
+	//有几个参数就在后面写
+	boost::thread thrd1(boost::bind(&CBoostClasstest::helloWorld, &m_BoostClassTest, 13, str, str));
+	thrd1.join();
+
+	boost::bind(&CBoostClasstest::helloWorld, &m_BoostClassTest, 5, _1, _2)(str, str);
+	boost::bind(&CBoostClasstest::helloWorld, &m_BoostClassTest, 12, _1, _1)(str);
 
 	//system("pause");
 }

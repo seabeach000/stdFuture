@@ -51,6 +51,15 @@
     <ClInclude Include="PlusPlus11.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="thread_specific_ptr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostSharedMemory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdFuture.cpp">
@@ -72,6 +81,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PlusPlus11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="thread_specific_ptr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BoostSharedMemory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
