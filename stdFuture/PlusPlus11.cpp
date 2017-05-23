@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <map>
 using namespace std;
 CPlusPlus11::CPlusPlus11()
 {
@@ -61,6 +62,14 @@ void CPlusPlus11::decltypeTest()
 
 void CPlusPlus11::autoTest()
 {
+	/////////////////////////////////////////////////////////////////////////////
+	//wxg20170330
+	std::map<int, int64_t>  send_to_consumers_delays;
+	send_to_consumers_delays[123] = 123;
+	send_to_consumers_delays[124] = 124;
+	send_to_consumers_delays.erase(123);
+
+	/////////////////////////////////////////////////////////////////////////////
 	//wxg20170321
 	int MAX_THREADS = 16;
 	int count = 4;
