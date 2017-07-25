@@ -168,62 +168,63 @@ void CBoostClasstest::thread_specific_ptrClassTest()
 //使用共享内存做为一个匿名内存块池
 int CBoostClasstest::share_memory_001()
 {
-	using namespace boost::interprocess;
-	{
-		//Remove shared memory on construction and destruction  
-		struct shm_remove
-		{
-			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-			~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-		}remover;
+	return 0;
+	//using namespace boost::interprocess;
+	//{
+	//	//Remove shared memory on construction and destruction  
+	//	struct shm_remove
+	//	{
+	//		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//	}remover;
 
-		//Create a managed shared memory segment  
-		managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+	//	//Create a managed shared memory segment  
+	//	managed_shared_memory segment(create_only, "MySharedMemory", 65536);
 
-		//Allocate a portion of the segment (raw memory)  
-		managed_shared_memory::size_type free_memory = segment.get_free_memory();
-		void * shptr = segment.allocate(1024/*bytes toallocate*/);
+	//	//Allocate a portion of the segment (raw memory)  
+	//	managed_shared_memory::size_type free_memory = segment.get_free_memory();
+	//	void * shptr = segment.allocate(1024/*bytes toallocate*/);
 
-		//Check invariant  
-		if (free_memory <= segment.get_free_memory())
-			return 1;
+	//	//Check invariant  
+	//	if (free_memory <= segment.get_free_memory())
+	//		return 1;
 
-		//An handle from the base address can identify any byte of the shared  
-		//memory segment even if it is mapped indifferent base addresses  
-		managed_shared_memory::handle_t handle = segment.get_handle_from_address(shptr);
-		std::stringstream s;
-		//s << "abc.exe" << " " << handle; //为了编译通过
-		s << std::ends;
+	//	//An handle from the base address can identify any byte of the shared  
+	//	//memory segment even if it is mapped indifferent base addresses  
+	//	managed_shared_memory::handle_t handle = segment.get_handle_from_address(shptr);
+	//	std::stringstream s;
+	//	//s << "abc.exe" << " " << handle; //为了编译通过
+	//	s << std::ends;
 
-		//Launch child process  
-		if (0 != std::system(s.str().c_str()))
-			return 1;
-		//Check memory has been freed  
-		if (free_memory != segment.get_free_memory())
-			return 1;
-	}
+	//	//Launch child process  
+	//	if (0 != std::system(s.str().c_str()))
+	//		return 1;
+	//	//Check memory has been freed  
+	//	if (free_memory != segment.get_free_memory())
+	//		return 1;
+	//}
 
-	//使用的时候，会通过名字打开
-	{
-		//Open managed segment  
-		managed_shared_memory segment(open_only, "MySharedMemory");
+	////使用的时候，会通过名字打开
+	//{
+	//	//Open managed segment  
+	//	managed_shared_memory segment(open_only, "MySharedMemory");
 
-		//An handle from the base address can identify any byte of the shared  
-		//memory segment even if it is mapped indifferent base addresses  
-		managed_shared_memory::handle_t handle = 0;
+	//	//An handle from the base address can identify any byte of the shared  
+	//	//memory segment even if it is mapped indifferent base addresses  
+	//	managed_shared_memory::handle_t handle = 0;
 
-		//Obtain handle value  
-		std::stringstream s;
-		/*s << argv[1]; */  //为了编译通过
-		s >> handle;
+	//	//Obtain handle value  
+	//	std::stringstream s;
+	//	/*s << argv[1]; */  //为了编译通过
+	//	s >> handle;
 
-		//通过传handle进行共享
-		//Get buffer local address from handle  
-		void *msg = segment.get_address_from_handle(handle);
+	//	//通过传handle进行共享
+	//	//Get buffer local address from handle  
+	//	void *msg = segment.get_address_from_handle(handle);
 
-		//Deallocate previously allocated memory  
-		segment.deallocate(msg);
-	}
+	//	//Deallocate previously allocated memory  
+	//	segment.deallocate(msg);
+	//}
 }
 
 

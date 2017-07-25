@@ -75,13 +75,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\ZqvideoCode\depot\Source\Repos\Server\dependencies64\boost\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\ZqvideoCode\depot\Source\Repos\Server\dependencies64\boost\stage\lib\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\ZqvideoCode\wxgtest\dependencies64\boost\;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\ZqvideoCode\wxgtest\dependencies64\boost\stage\lib\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\ZqvideoCode\depot\Source\Repos\Server\dependencies64\boost\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\ZqvideoCode\depot\Source\Repos\Server\dependencies64\boost\stage\lib\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\ZqvideoCode\wxgtest\dependencies64\boost\;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\ZqvideoCode\wxgtest\dependencies64\boost\stage\lib\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,8 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\ZqvideoCode\wxgtest\dependencies64\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,6 +202,7 @@
     <ClInclude Include="BoostSharedMemory.h" />
     <ClInclude Include="Lambdatest.h" />
     <ClInclude Include="PlusPlus11.h" />
+    <ClInclude Include="receiver.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StaticTest.h" />
     <ClInclude Include="stdafx.h" />
@@ -217,6 +217,7 @@
     <ClCompile Include="BoostSharedMemory.cpp" />
     <ClCompile Include="Lambdatest.cpp" />
     <ClCompile Include="PlusPlus11.cpp" />
+    <ClCompile Include="receiver.cpp" />
     <ClCompile Include="StaticTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
