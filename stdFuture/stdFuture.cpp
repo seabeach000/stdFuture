@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "stdFuture.h"
 #include "stdFutureDlg.h"
+#include<iomanip>  
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,6 +37,18 @@ CstdFutureApp theApp;
 
 
 // CstdFutureApp 初始化
+void printInfo()
+{
+	SYSTEM_INFO SystemInfo;
+	GetSystemInfo(&SystemInfo);
+
+	printf(" "
+		"dwNumberOfProcessors=%u, dwActiveProcessorMask=%u, wProcessorLevel=%u, "
+		"wProcessorArchitecture=%u, dwPageSize=%u ",
+		SystemInfo.dwNumberOfProcessors, SystemInfo.dwActiveProcessorMask, SystemInfo.wProcessorLevel,
+		SystemInfo.wProcessorArchitecture, SystemInfo.dwPageSize
+	);
+}
 
 BOOL CstdFutureApp::InitInstance()
 {
@@ -50,7 +63,6 @@ BOOL CstdFutureApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinApp::InitInstance();
-
 
 	AfxEnableControlContainer();
 
@@ -78,6 +90,49 @@ BOOL CstdFutureApp::InitInstance()
 	freopen_s(&streamOut,"CONOUT$", "w", stdout); // 重定向输出
 	freopen_s(&streamIn,"CONIN$", "r+t", stdin); // 申请读
 
+	//wxg20180508
+	DWORD_PTR processAffinityMask = -1;
+	DWORD_PTR systemAffinityMask = -1;
+	bool ret = GetProcessAffinityMask(GetCurrentProcess(), &processAffinityMask, &systemAffinityMask);
+	std::cout << "GetProcessAffinityMask " << std::setbase(16) << processAffinityMask << "  " << systemAffinityMask << std::endl;
+	ret = SetProcessAffinityMask(GetCurrentProcess(), processAffinityMask);
+	std::cout << "SetProcessAffinityMask " << std::setbase(16) << processAffinityMask << std::endl;
+	//不超过64核的应该都能满足
+	UCHAR NodeNumber;
+	ret = GetNumaProcessorNode(0, &NodeNumber);
+	std::cout << "GetNumaProcessorNode(0, &NodeNumber)   " << std::setbase(16) << (int)NodeNumber << std::endl;
+	ret = GetNumaProcessorNode(16, &NodeNumber);
+	std::cout << "GetNumaProcessorNode(16, &NodeNumber)   " << std::setbase(16) << (int)NodeNumber << std::endl;
+	ret = GetNumaProcessorNode(32, &NodeNumber);
+	std::cout << "GetNumaProcessorNode(32, &NodeNumber)   " << std::setbase(16) << (int)NodeNumber << std::endl;
+	ULONGLONG processMask = 0;
+	ret = GetNumaNodeProcessorMask(0, &processMask);
+	std::cout << "GetNumaNodeProcessorMask(0, &processMask)   " << std::setbase(16) << processMask << std::endl;
+	processMask = 0;
+	ret = GetNumaNodeProcessorMask(1, &processMask);
+	std::cout << "GetNumaNodeProcessorMask(1, &processMask)   " << std::setbase(16) << processMask << std::endl;
+	/////////////////////////////////////////////////////////////
+	USHORT groupCnt;
+	USHORT groupAry;
+	ret = GetProcessGroupAffinity(GetCurrentProcess(), &groupCnt, &groupAry);
+	std::cout << "GetProcessGroupAffinity   " << "groupAry   " << groupAry << "  groupCnt   " << groupCnt << std::endl;
+
+	std::thread thd(printInfo);
+	GROUP_AFFINITY GroupAffinity;
+	GROUP_AFFINITY previousAffinity;
+	KAFFINITY  groupMask = 1;
+	GroupAffinity.Mask = groupMask;
+	GroupAffinity.Group = 0;
+	//这个函数一直失败
+	ret = SetThreadGroupAffinity(thd.native_handle(), &GroupAffinity, &previousAffinity);
+
+	//ProcessMemoryPriority ProcessInformationClassMax
+	//SetProcessInformation();都不能满足
+
+	DWORD_PTR retmask;
+	DWORD_PTR mask = 0x70;
+	retmask = SetThreadAffinityMask(thd.native_handle(), mask);
+	//---------------------------------------------------------------------------
 	CstdFutureDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();

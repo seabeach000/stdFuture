@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "thread_specific_ptr.h"
 //using namespace boost;
 
 CBoostClasstest::CBoostClasstest()
@@ -162,7 +163,31 @@ void CBoostClasstest::Convert16StringTodata()
 
 void CBoostClasstest::thread_specific_ptrClassTest()
 {
+	// 主线程也需要本地存储一个对象
+	thread_ptr::thread_specific_ptrClass ptrClass;
 
+	ptrClass.get_thread_logfile().reset(new thread_ptr::logfile(100));
+	// 记录日志
+	ptrClass.get_thread_logfile()->log("程序开始");
+	random::uniform_int_distribution<int>  waittime(100, 500);
+	random::mt19937 gen;
+
+
+
+	// 创建一个线程组
+	thread_group tg;
+	for (int i = 0; i < 5; ++i)
+	{
+		//tg.create_thread(boost::bind(&thread_ptr::thread_specific_ptrClass::run,ptrClass, i));
+
+		boost::posix_time::milliseconds wt(waittime(gen));
+		boost::this_thread::sleep(wt);
+	}
+	// 等待所有线程结束
+	tg.join_all();
+	ptrClass.get_thread_logfile()->log("程序结束");
+	// 显示最终合并得到的日志文件
+	//thread_ptr::cmblog->display();
 }
 
 //使用共享内存做为一个匿名内存块池

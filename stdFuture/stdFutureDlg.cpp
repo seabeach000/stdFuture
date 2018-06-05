@@ -74,6 +74,7 @@ BEGIN_MESSAGE_MAP(CstdFutureDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_lambada, &CstdFutureDlg::OnBnClickedButtonlambada)
 	ON_BN_CLICKED(IDC_BUTTON_StaticVariable, &CstdFutureDlg::OnBnClickedButtonStaticvariable)
 	ON_BN_CLICKED(IDC_BUTTONCPlus, &CstdFutureDlg::OnBnClickedButtoncplus)
+	ON_BN_CLICKED(IDC_BUTTON_specficPTR, &CstdFutureDlg::OnBnClickedButtonspecficptr)
 END_MESSAGE_MAP()
 
 
@@ -218,6 +219,10 @@ void CstdFutureDlg::OnBnClickedButtonfuture()
 	if (ret) std::cout << "It is prime!\n";
 	else std::cout << "It is not prime.\n";
 
+	//std::shared_future 与 std::future 类似，但是 std::shared_future 可以拷贝、多个 std::shared_future 可以共享某个共享状态的最终结果(即共享状态的某个值或者异常)。
+	//shared_future 可以通过某个 std::future 对象隐式转换（参见 std::shared_future 的构造函数），或者通过 std::future::share() 显示转换，无论哪种转换，被转换的那个 
+	//std::future 对象都会变为 not-valid.
+
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -349,7 +354,7 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 
 	std::cout << std::endl;
 
-	system("Pause");
+	std::system("Pause");
 
 	return ;
 }   
@@ -408,5 +413,14 @@ void CstdFutureDlg::OnBnClickedButtoncplus()
 	cllTest.stdmove();
 	cllTest.autoTest();
 	cllTest.decltypeTest();
+
+}
+
+
+void CstdFutureDlg::OnBnClickedButtonspecficptr()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_BoostClassTest.thread_specific_ptrClassTest();
+	return;
 
 }

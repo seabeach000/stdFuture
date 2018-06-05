@@ -67,4 +67,5 @@ public:
 	afx_msg void OnBnClickedButtonlambada();
 	afx_msg void OnBnClickedButtonStaticvariable();
 	afx_msg void OnBnClickedButtoncplus();
+	afx_msg void OnBnClickedButtonspecficptr();
 };

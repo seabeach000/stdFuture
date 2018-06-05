@@ -91,6 +91,7 @@ void CPlusPlus11::autoTest()
 	//vec.erase()
 	cout << vec.front() << " " << vec.back() << endl;
 	//把vector里面的东西遍历一遍，上面是因为vector里面只有一个元素
+	std::fill(vec.begin(), vec.end(), -1);
 	for (auto kk:vec)
 	{
 		cout << kk << endl;
