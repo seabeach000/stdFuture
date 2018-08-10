@@ -448,3 +448,10 @@ int CBoostClasstest::share_memory_001()
 //		segment.destroy<MyVector>("MyVector");
 //	}
 //}
+
+
+int CBoostClasstest::hardware()
+{
+	int hardware_concurrency_ = boost::thread::hardware_concurrency();
+	return 0;
+}

@@ -382,6 +382,8 @@ void CstdFutureDlg::OnBnClickedButtonBthread()
 	boost::bind(&CBoostClasstest::helloWorld, &m_BoostClassTest, 5, _1, _2)(str, str);
 	boost::bind(&CBoostClasstest::helloWorld, &m_BoostClassTest, 12, _1, _1)(str);
 
+	m_BoostClassTest.hardware();
+
 	//system("pause");
 }
 

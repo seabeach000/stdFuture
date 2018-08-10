@@ -19,5 +19,6 @@ public:
 	//int share_memory_002();
 	//int share_memory_003();
 	//int share_memory_004();
+	int hardware();
 };
 
