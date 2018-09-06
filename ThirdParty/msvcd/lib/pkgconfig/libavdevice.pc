@@ -1,0 +1,14 @@
+prefix=/home/wangxingang/ffmpeg/build
+exec_prefix=${prefix}
+libdir=/home/wangxingang/ffmpeg/build/lib
+includedir=/home/wangxingang/ffmpeg/build/include
+
+Name: libavdevice
+Description: FFmpeg device handling library
+Version: 58.4.101
+Requires: 
+Requires.private: libavfilter >= 7.25.100, libswscale >= 5.2.100, libpostproc >= 55.2.100, libavformat >= 58.17.101, libavcodec >= 58.21.104, libswresample >= 3.2.100, libavutil >= 56.18.102
+Conflicts:
+Libs: -L${libdir}  -lavdevice 
+Libs.private: psapi.lib ole32.lib strmiids.lib uuid.lib oleaut32.lib shlwapi.lib gdi32.lib vfw32.lib
+Cflags: -I${includedir}

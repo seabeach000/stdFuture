@@ -244,3 +244,8 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 *.cd
+*.ts
+*.mxf
+/demuxing_decode/541
+/demuxing_decode/79Ox0718.mxf
+/demuxing_decode/7CRY0157.mxf

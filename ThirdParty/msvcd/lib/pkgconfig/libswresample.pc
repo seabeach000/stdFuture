@@ -1,0 +1,14 @@
+prefix=/home/wangxingang/ffmpeg/build
+exec_prefix=${prefix}
+libdir=/home/wangxingang/ffmpeg/build/lib
+includedir=/home/wangxingang/ffmpeg/build/include
+
+Name: libswresample
+Description: FFmpeg audio resampling library
+Version: 3.2.100
+Requires: 
+Requires.private: libavutil >= 56.18.102
+Conflicts:
+Libs: -L${libdir}  -lswresample 
+Libs.private: 
+Cflags: -I${includedir}

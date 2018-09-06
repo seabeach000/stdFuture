@@ -1,0 +1,14 @@
+prefix=/home/wangxingang/ffmpeg/build
+exec_prefix=${prefix}
+libdir=/home/wangxingang/ffmpeg/build/lib
+includedir=/home/wangxingang/ffmpeg/build/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 56.18.102
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil 
+Libs.private: user32.lib bcrypt.lib
+Cflags: -I${includedir}

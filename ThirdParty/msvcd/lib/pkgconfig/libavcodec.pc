@@ -1,0 +1,14 @@
+prefix=/home/wangxingang/ffmpeg/build
+exec_prefix=${prefix}
+libdir=/home/wangxingang/ffmpeg/build/lib
+includedir=/home/wangxingang/ffmpeg/build/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 58.21.104
+Requires: 
+Requires.private: libswresample >= 3.2.100, libavutil >= 56.18.102
+Conflicts:
+Libs: -L${libdir}  -lavcodec 
+Libs.private: -libpath:/home/wangxingang/ffmpeg/build/lib libx264.lib ole32.lib user32.lib
+Cflags: -I${includedir}
