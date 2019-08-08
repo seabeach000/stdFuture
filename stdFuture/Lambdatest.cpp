@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Lambdatest.h"
 #include <vector>
+#include <memory>
 
 CLambdatest::CLambdatest():m_nData(20)
 {
@@ -72,4 +73,6 @@ void CLambdatest::lambadaTest()
 		[]() {}();
 		[] {}();
 	}
+
+	//std::shared_ptr<void> crt_log(nullptr, [](int h) { h = 5; });  //后面lambda是析构函数
 }

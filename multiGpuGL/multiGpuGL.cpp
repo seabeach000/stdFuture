@@ -5,7 +5,6 @@
 #include "GL/glew.h"
 #include "GL/wglew.h"
 
-#include "SFML/Window/Context.hpp"
 #include <memory>
 
 #define MAX_GPU 4
@@ -16,14 +15,14 @@ int main()
 	//device_->setActive(true);
 
 
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-	{
-		fprintf(stderr, "error initializaing GLew %s\n", glewGetErrorString(err));
-		return 0;
-	}
-	if (!GLEW_VERSION_3_0)
-		return 0;
+	//GLenum err = glewInit();
+	//if (err != GLEW_OK)
+	//{
+	//	fprintf(stderr, "error initializaing GLew %s\n", glewGetErrorString(err));
+	//	return 0;
+	//}
+	//if (!GLEW_VERSION_3_0)
+	//	return 0;
 
 	GLuint fbo_;
 	PIXELFORMATDESCRIPTOR pfd;

@@ -19,8 +19,11 @@
 
 #include <boost/interprocess/containers/vector.hpp>  
 #include <boost/interprocess/allocators/allocator.hpp> 
+#include <boost/format.hpp>
 #include <string>
 #include <vector>
+
+#include <inttypes.h>
 
 #include "thread_specific_ptr.h"
 //using namespace boost;
@@ -159,6 +162,97 @@ void CBoostClasstest::Convert16StringTodata()
 {
 	int x = boost::lexical_cast<HexTo<int>>(L"A0");
 	int a = 0;
+
+	std::string str =  (boost::format("%1% \n %2% \n %3%") % "first"%"second"%"third").str();
+	boost::format fmt("%2% \n %1% \n %3%");
+	fmt%"first";
+	fmt %"second";
+	fmt %"third";
+	std::string str01 = fmt.str();
+
+	//传统c语言风格  
+	cout << boost::format("\n\n%s"
+		"%1t 十进制 = [%d]\n"
+		"%1t 格式化的十进制 = [%5d]\n"
+		"%1t 格式化十进制，前补'0' = [%05d]\n"
+		"%1t 十六进制 = [%x]\n"
+		"%1t 八进制 = [%o]\n"
+		"%1t 浮点 = [%f]\n"
+		"%1t 格式化的浮点 = [%3.3f]\n"
+		"%1t 科学计数 = [%e]\n"
+	) % "example :\n" % 15 % 15 % 15 % 15 % 15 % 15.01 % 15.01 % 15.01 << endl;
+
+	//.net的风格  
+	cout << boost::format("%1%"
+		"%1t 十进制 = [%2$d]\n"
+		"%1t 格式化的十进制 = [%2$5d]\n"
+		"%1t 格式化十进制，前补'0' = [%2$05d]\n"
+		"%1t 十六进制 = [%2$x]\n"
+		"%1t 八进制 = [%2$o]\n"
+		"%1t 浮点 = [%3$f]\n"
+		"%1t 格式化的浮点 = [%3$3.3f]\n"
+		"%1t 科学计数 = [%3$e]\n"
+	) % "example :\n" % 15 % 15.01 << endl;
+
+
+	try
+	{
+		//另外还支持 %|spec| 格式 ，它与%spec没有功能上的区别，只是看的更清楚了。
+		std::cout << boost::format("%|1$+| %2% %1%") % 99 % 100 << std::endl;
+		std::cout << boost::format("%|+| %|| %||") % 99 % 100 % 99 << std::endl;//省略占位符
+		std::cout << boost::format("%+d %d %d") % 99 % 100 % 99 << std::endl;
+		std::cout << boost::format("%+s %s %s") % 99 % 100 % 99 << std::endl;
+	}
+	catch (boost::io::format_error &ex)
+	{
+		std::cout << ex.what() << std::endl;
+	}
+
+	//   %|5$x|
+
+
+	boost::format fmt2("%s:%d + %d = %d\n");
+	fmt2%"sum" % 1 % 2 % (1 + 2);
+	cout << fmt2.str();
+	cout << boost::format("%s:%d + %d = %d\n") % "sum" % 1 % 2 % (1 + 2);
+
+	boost::format fmt3("%05d\n%|-8.3f|\n%| 10s|\n%05X\n");
+	cout << fmt3 % 62 % 2.236%"123456" % 15;
+
+
+	uint64_t oBestMasterClockId = 0x1234567890ABCDEF;
+	uint64_t oGrandMasterClockId = 0x1234567890ABCDEF;
+
+	char buf[200];
+	sprintf_s(buf, _countof(buf), "Detected Smpte2059 changes:\n"
+		" \tState=%s\n"
+		" \tBestMasterClockSfpLabel=%s\n"
+		" \tBestMasterClockId=%016" PRIx64 "\n"
+		" \tGrandMasterClockId=%016" PRIx64 "\n",
+		"abc",
+		"def",
+		oBestMasterClockId,
+		oGrandMasterClockId);
+	cout << buf;
+
+	auto currentTime = boost::get_xtime(boost::get_system_time());
+	boost::posix_time::ptime pTime = boost::posix_time::from_time_t(currentTime.sec);
+	//std::tm timestamp = boost::posix_time::to_tm(pTime);
+	auto date = pTime.date();
+	auto time = pTime.time_of_day();
+	auto milliseconds = time.fractional_seconds() / 1000; // microseconds to milliseconds
+
+	std::wstringstream buffer;
+	buffer
+		<< std::setfill(L'0')
+		<< L"["
+		<< std::setw(4) << date.year() << L"-" << std::setw(2) << date.month().as_number() << "-" << std::setw(2) << date.day().as_number()
+		<< L" "
+		<< std::setw(2) << time.hours() << L":" << std::setw(2) << time.minutes() << L":" << std::setw(2) << time.seconds()
+		<< L"."
+		<< std::setw(3) << milliseconds
+		<< L"] ";
+	wcout << buffer.str();
 }
 
 void CBoostClasstest::thread_specific_ptrClassTest()

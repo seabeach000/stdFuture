@@ -405,6 +405,7 @@ void CstdFutureDlg::OnBnClickedButtonStaticvariable()
 
 	//wxg20160928
 	staticVariableTest2.mapTest();
+	staticVariableTest2.vectorfuzhi();
 }
 
 
@@ -415,7 +416,7 @@ void CstdFutureDlg::OnBnClickedButtoncplus()
 	cllTest.stdmove();
 	cllTest.autoTest();
 	cllTest.decltypeTest();
-
+	cllTest.stdtime();
 }
 
 

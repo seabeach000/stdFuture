@@ -35,7 +35,7 @@ namespace thread_ptr
 		{
 			struct tm* ltime = nullptr;
 			localtime_s(ltime, &timeinfo);
-			string text(asctime(ltime));
+			string text("not safe need change"/*asctime(ltime)*/);
 			text += " " + id + ":" + msg;
 			return text;
 		}

@@ -132,6 +132,10 @@ BOOL CstdFutureApp::InitInstance()
 	DWORD_PTR retmask;
 	DWORD_PTR mask = 0x70;
 	retmask = SetThreadAffinityMask(thd.native_handle(), mask);
+	if (thd.joinable())
+	{
+		thd.join();
+	}
 	//---------------------------------------------------------------------------
 	CstdFutureDlg dlg;
 	m_pMainWnd = &dlg;

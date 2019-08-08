@@ -7,6 +7,11 @@
 #include <vector>
 #include <array>
 #include <map>
+
+#include <chrono>
+
+#include <cctype>
+
 using namespace std;
 CPlusPlus11::CPlusPlus11()
 {
@@ -147,6 +152,11 @@ void swap(T& a, T& b)
 //Rvalue中的R代表Read，就是可以知道它的值。
 //左值符号&和右值符号&&
 //左值的声明符号为&，右值的声明符号为&&。在C++中，临时对象不能作为左值，但是可以作为常量引用const &
+//{
+	double b = 1.2;
+	//int& a = b; //错误，因为这种方式将产生一个临时变量，而临时变量具有常性，也就是说a引用的是带有常性的临时变量 
+	const int& a = b;//所以需要用const修饰，此时的a是这个临时变量的名字，与b将没有关系，不论怎么修改b，都不会影响a。当然a并不能被修改
+//}
 void print_lvalue(int& i)
 {
 	cout << "lvalue:" << i << endl;
@@ -271,9 +281,32 @@ void CPlusPlus11::variableArray(unsigned int x, unsigned int y)
 	int a[t];
 }
 
-//void variableArray(int x, int y)
-//{
-//	int t = 0;
-//	std::cin >> t;
-//	int b[10];
-//}
+typedef std::chrono::high_resolution_clock c_t;
+void CPlusPlus11::stdtime()
+{
+	auto time1(c_t::now());
+	int64_t a = 8e9l;
+	cout << "a = " << a << endl;
+
+	static const double PI = std::atan(1.0)*4.0;
+	static const double H_PI = std::atan(1.0)*2.0;
+
+	std::wstring audio_layouts = lrReturn();
+	wcout << audio_layouts << endl;
+
+	std::wstring name = audio_layouts;
+	std::transform(name.begin(), name.end(), name.begin(), std::tolower);
+	wcout << name << endl;
+}
+
+std::wstring CPlusPlus11::lrReturn()
+{
+	return LR"(
+		<audio>
+			<channel-layouts>
+				<channel-layout name="mono"        type="mono"        num-channels="1" channel-order="FC" />
+				<channel-layout name="stereo"      type="stereo"      num-channels="2" channel-order="FL FR" />
+			</channel-layouts>			
+		</audio>
+	)";
+}

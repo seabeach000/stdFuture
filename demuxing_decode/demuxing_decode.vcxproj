@@ -22,7 +22,7 @@
     <ProjectGuid>{F6CE639F-935E-432B-9622-7556E9909E7E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>demuxing_decode</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../ThirdParty/msvcd/bin</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../ThirdParty/msvcd/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>avformat.lib;avcodec.lib;avutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
