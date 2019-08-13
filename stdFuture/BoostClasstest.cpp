@@ -25,8 +25,9 @@
 
 #include <inttypes.h>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "thread_specific_ptr.h"
-//using namespace boost;
 
 CBoostClasstest::CBoostClasstest()
 {
@@ -163,7 +164,308 @@ void CBoostClasstest::Convert16StringTodata()
 	int x = boost::lexical_cast<HexTo<int>>(L"A0");
 	int a = 0;
 
-	std::string str =  (boost::format("%1% \n %2% \n %3%") % "first"%"second"%"third").str();
+	std::wstring str = L"IP2110-out";
+	boost::to_lower(str);
+	std::wstring str01 = boost::to_upper_copy(str);
+}
+
+void CBoostClasstest::thread_specific_ptrClassTest()
+{
+	// 主线程也需要本地存储一个对象
+	thread_ptr::thread_specific_ptrClass ptrClass;
+
+	ptrClass.get_thread_logfile().reset(new thread_ptr::logfile(100));
+	// 记录日志
+	ptrClass.get_thread_logfile()->log("程序开始");
+	random::uniform_int_distribution<int>  waittime(100, 500);
+	random::mt19937 gen;
+
+
+
+	// 创建一个线程组
+	thread_group tg;
+	for (int i = 0; i < 5; ++i)
+	{
+		//tg.create_thread(boost::bind(&thread_ptr::thread_specific_ptrClass::run,ptrClass, i));
+
+		boost::posix_time::milliseconds wt(waittime(gen));
+		boost::this_thread::sleep(wt);
+	}
+	// 等待所有线程结束
+	tg.join_all();
+	ptrClass.get_thread_logfile()->log("程序结束");
+	// 显示最终合并得到的日志文件
+	//thread_ptr::cmblog->display();
+}
+
+	//使用共享内存做为一个匿名内存块池
+	int CBoostClasstest::share_memory_001()
+	{
+		return 0;
+		//using namespace boost::interprocess;
+		//{
+		//	//Remove shared memory on construction and destruction  
+		//	struct shm_remove
+		//	{
+		//		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		//		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+		//	}remover;
+
+		//	//Create a managed shared memory segment  
+		//	managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+
+		//	//Allocate a portion of the segment (raw memory)  
+		//	managed_shared_memory::size_type free_memory = segment.get_free_memory();
+		//	void * shptr = segment.allocate(1024/*bytes toallocate*/);
+
+		//	//Check invariant  
+		//	if (free_memory <= segment.get_free_memory())
+		//		return 1;
+
+		//	//An handle from the base address can identify any byte of the shared  
+		//	//memory segment even if it is mapped indifferent base addresses  
+		//	managed_shared_memory::handle_t handle = segment.get_handle_from_address(shptr);
+		//	std::stringstream s;
+		//	//s << "abc.exe" << " " << handle; //为了编译通过
+		//	s << std::ends;
+
+		//	//Launch child process  
+		//	if (0 != std::system(s.str().c_str()))
+		//		return 1;
+		//	//Check memory has been freed  
+		//	if (free_memory != segment.get_free_memory())
+		//		return 1;
+		//}
+
+		////使用的时候，会通过名字打开
+		//{
+		//	//Open managed segment  
+		//	managed_shared_memory segment(open_only, "MySharedMemory");
+
+		//	//An handle from the base address can identify any byte of the shared  
+		//	//memory segment even if it is mapped indifferent base addresses  
+		//	managed_shared_memory::handle_t handle = 0;
+
+		//	//Obtain handle value  
+		//	std::stringstream s;
+		//	/*s << argv[1]; */  //为了编译通过
+		//	s >> handle;
+
+		//	//通过传handle进行共享
+		//	//Get buffer local address from handle  
+		//	void *msg = segment.get_address_from_handle(handle);
+
+		//	//Deallocate previously allocated memory  
+		//	segment.deallocate(msg);
+		//}
+	}
+
+
+	//创建命名共享内存对象
+	//你可以在共享内存段中创建对象，给它们string类型的名字以便其他进程能够找到它们，使用它们，并且当对象不再使用时从内存段中删除它们
+
+	//int CBoostClasstest::share_memory_002()
+	//{
+	//	using namespace boost::interprocess;
+	//	typedef std::pair<double, int> MyType;
+	//
+	//	{
+	//		//Remove shared memory on construction and destruction  
+	//		struct shm_remove
+	//		{
+	//			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//			~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//		} remover;
+	//
+	//		//Construct managed shared memory  
+	//		managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+	//
+	//		//Create an object of MyType initialized to {0.0, 0}  
+	//		MyType *instance = segment.construct<MyType>
+	//			("MyType instance")  //name of the object  
+	//			(0.0, 0);            //ctor first argument 
+	//								 //Create an array of 10 elements of MyType initialized to {0.0, 0}  
+	//
+	//		MyType *array = segment.construct<MyType>
+	//			("MyType array")     //name of the object  
+	//			[10]                 //number of elements  
+	//		(0.0, 0);            //Same two ctor arguments for all objects 
+	//
+	//		//Create an array of 3 elements of MyType initializing each one  
+	//		//to a different value {0.0, 0}, {1.0, 1}, {2.0, 2}...  
+	//		float float_initializer[3] = { 0.0, 1.0, 2.0 };
+	//		int   int_initializer[3] = { 0, 1, 2 };
+	//
+	//		MyType *array_it = segment.construct_it<MyType>
+	//			("MyType array from it")   //name of the object  
+	//			[3]                        //number of elements  
+	//		(&float_initializer[0]    //Iterator for the 1st ctor argument  
+	//			, &int_initializer[0]);    //Iterator for the 2nd ctor argument 
+	//									   //Launch child process  
+	//		std::string s(argv[0]); s += " child ";
+	//		if (0 != std::system(s.c_str()))
+	//			return 1;
+	//
+	//		//Check child has destroyed all objects  
+	//		if (segment.find<MyType>("MyType array").first ||
+	//			segment.find<MyType>("MyType instance").first ||
+	//			segment.find<MyType>("MyType array from it").first)
+	//			return 1;
+	//	}
+	//	{
+	//		//Open managed shared memory  
+	//		managed_shared_memory segment(open_only, "MySharedMemory");
+	//
+	//		std::pair<MyType*, managed_shared_memory::size_type> res;
+	//
+	//		//Find the array  
+	//		res = segment.find<MyType>("MyType array");
+	//		//Length should be 10  
+	//		if (res.second != 10) return 1;
+	//
+	//		//Find the object  
+	//		res = segment.find<MyType>("MyType instance");
+	//		//Length should be 1  
+	//		if (res.second != 1) return 1;
+	//
+	//		//Find the array constructed from iterators  
+	//		res = segment.find<MyType>("MyType array from it");
+	//		//Length should be 3  
+	//		if (res.second != 3) return 1;
+	//
+	//		//We're done, delete all the objects  
+	//		segment.destroy<MyType>("MyType array");
+	//		segment.destroy<MyType>("MyType instance");
+	//		segment.destroy<MyType>("MyType array from it");
+	//	}
+	//}
+	//
+	////Boost.Interprocess提供offset_ptr智能指针家族做为一个偏移指针，它用来存储偏移指针地址与对象地址的距离。当offset_ptr置于共享内存段中时，
+	////它能安全的指向这块共享内存段中的对象，甚至当内存段在不同的进程映射到不同的基地址时也能正常工作。
+	////这使得带指针成员的对象能够放置在共享内存中。例如，如果我们想在共享内存中创建一个链表
+	//int CBoostClasstest::share_memory_003()
+	//{
+	//	using namespace boost::interprocess;
+	//
+	//	//Shared memory linked list node  
+	//	struct list_node
+	//	{
+	//		offset_ptr<list_node> next;
+	//		int                   value;
+	//	};
+	//
+	//	//Remove shared memory on construction and destruction  
+	//	struct shm_remove
+	//	{
+	//		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//	} remover;
+	//
+	//	//Create shared memory  
+	//	managed_shared_memory segment(create_only,
+	//		"MySharedMemory",  //segment name  
+	//		65536);
+	//
+	//	//Create linked list with 10 nodes in shared memory  
+	//	offset_ptr<list_node> prev = 0, current, first;
+	//
+	//	int i;
+	//	for (i = 0; i < 10; ++i, prev = current) {
+	//		current = static_cast<list_node*>(segment.allocate(sizeof(list_node)));
+	//		current->value = i;
+	//		current->next = 0;
+	//
+	//		if (!prev)
+	//			first = current;
+	//		else
+	//			prev->next = current;
+	//	}
+	//
+	//	//Communicate list to other processes  
+	//	//. . .  
+	//	//When done, destroy list  
+	//	for (current = first; current; /**/) {
+	//		prev = current;
+	//		current = current->next;
+	//		segment.deallocate(prev.get());
+	//	}
+	//
+	//}
+	//
+	////http://blog.csdn.net/great3779/article/details/7222202
+	///*Boost.Interprocess允许在共享内存和内存映射文件中创建复杂的对象。例如，我们可以在共享内存中
+	//创建类STL容器。为了做到这点，我们仅需创建一个特殊（控制）的共享内存片段，申明一个
+	//Boost.Interprocess分配器然后创建像其他对象一样在共享内存中创建vector*/
+	//
+	//using namespace boost::interprocess;
+	//using namespace std;
+	//int CBoostClasstest::share_memory_004()
+	//{
+	//
+	//	//Define an STL compatible allocator of ints that allocates from the managed_shared_memory.  
+	//	//This allocator will allow placing containers in the segment  
+	//	typedef allocator<int, managed_shared_memory::segment_manager>  ShmemAllocator;
+	//
+	//	//Alias a vector that uses the previous STL-like allocator so that allocates  
+	//	//its values from the segment  
+	//	typedef vector<int, ShmemAllocator> MyVector;
+	//
+	//	{
+	//		struct shm_remove
+	//		{
+	//			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//			~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
+	//		} remover;
+	//
+	//		//Create a new segment with given name and size  
+	//		boost::interprocess::managed_shared_memory segment(create_only, "MySharedMemory", 65536);
+	//
+	//		//Initialize shared memory STL-compatible allocator  
+	//		const ShmemAllocator alloc_inst(segment.get_segment_manager());
+	//
+	//		//Construct a vector named "MyVector" in shared memory with argument alloc_inst  
+	//		MyVector *myvector = segment.construct<MyVector>("MyVector")(alloc_inst);
+	//
+	//		for(int i = 0; i < 100; ++i)  //Insert data in the vector  
+	//			myvector->push_back(i);
+	//
+	//		//Launch child process  
+	//		std::string s(argv[0]);
+	//		s += " child ";
+	//		if(0 != std::system(s.c_str()))
+	//			return 1;
+	//
+	//		//Check child has destroyed the vector  
+	//		if(segment.find<MyVector>("MyVector").first)
+	//			return 1;
+	//	}
+	//
+	//
+	//	{
+	//		//Child process  
+	//		//Open the managed segment  
+	//		managed_shared_memory segment(open_only, "MySharedMemory");
+	//
+	//		//Find the vector using the c-string name  
+	//		MyVector *myvector = segment.find<MyVector>("MyVector").first;
+	//
+	//		//Use vector in reverse order  
+	//		std::sort(myvector->rbegin(), myvector->rend());
+	//
+	//		//When done, destroy the vector from the segment  
+	//		segment.destroy<MyVector>("MyVector");
+	//	}
+	//}
+
+int CBoostClasstest::hardware()
+{
+	int hardware_concurrency_ = boost::thread::hardware_concurrency();
+	return 0;
+}
+
+void CBoostClasstest::boostFormatString()
+{
+	std::string str = (boost::format("%1% \n %2% \n %3%") % "first"%"second"%"third").str();
 	boost::format fmt("%2% \n %1% \n %3%");
 	fmt%"first";
 	fmt %"second";
@@ -253,299 +555,4 @@ void CBoostClasstest::Convert16StringTodata()
 		<< std::setw(3) << milliseconds
 		<< L"] ";
 	wcout << buffer.str();
-}
-
-void CBoostClasstest::thread_specific_ptrClassTest()
-{
-	// 主线程也需要本地存储一个对象
-	thread_ptr::thread_specific_ptrClass ptrClass;
-
-	ptrClass.get_thread_logfile().reset(new thread_ptr::logfile(100));
-	// 记录日志
-	ptrClass.get_thread_logfile()->log("程序开始");
-	random::uniform_int_distribution<int>  waittime(100, 500);
-	random::mt19937 gen;
-
-
-
-	// 创建一个线程组
-	thread_group tg;
-	for (int i = 0; i < 5; ++i)
-	{
-		//tg.create_thread(boost::bind(&thread_ptr::thread_specific_ptrClass::run,ptrClass, i));
-
-		boost::posix_time::milliseconds wt(waittime(gen));
-		boost::this_thread::sleep(wt);
-	}
-	// 等待所有线程结束
-	tg.join_all();
-	ptrClass.get_thread_logfile()->log("程序结束");
-	// 显示最终合并得到的日志文件
-	//thread_ptr::cmblog->display();
-}
-
-//使用共享内存做为一个匿名内存块池
-int CBoostClasstest::share_memory_001()
-{
-	return 0;
-	//using namespace boost::interprocess;
-	//{
-	//	//Remove shared memory on construction and destruction  
-	//	struct shm_remove
-	//	{
-	//		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-	//		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-	//	}remover;
-
-	//	//Create a managed shared memory segment  
-	//	managed_shared_memory segment(create_only, "MySharedMemory", 65536);
-
-	//	//Allocate a portion of the segment (raw memory)  
-	//	managed_shared_memory::size_type free_memory = segment.get_free_memory();
-	//	void * shptr = segment.allocate(1024/*bytes toallocate*/);
-
-	//	//Check invariant  
-	//	if (free_memory <= segment.get_free_memory())
-	//		return 1;
-
-	//	//An handle from the base address can identify any byte of the shared  
-	//	//memory segment even if it is mapped indifferent base addresses  
-	//	managed_shared_memory::handle_t handle = segment.get_handle_from_address(shptr);
-	//	std::stringstream s;
-	//	//s << "abc.exe" << " " << handle; //为了编译通过
-	//	s << std::ends;
-
-	//	//Launch child process  
-	//	if (0 != std::system(s.str().c_str()))
-	//		return 1;
-	//	//Check memory has been freed  
-	//	if (free_memory != segment.get_free_memory())
-	//		return 1;
-	//}
-
-	////使用的时候，会通过名字打开
-	//{
-	//	//Open managed segment  
-	//	managed_shared_memory segment(open_only, "MySharedMemory");
-
-	//	//An handle from the base address can identify any byte of the shared  
-	//	//memory segment even if it is mapped indifferent base addresses  
-	//	managed_shared_memory::handle_t handle = 0;
-
-	//	//Obtain handle value  
-	//	std::stringstream s;
-	//	/*s << argv[1]; */  //为了编译通过
-	//	s >> handle;
-
-	//	//通过传handle进行共享
-	//	//Get buffer local address from handle  
-	//	void *msg = segment.get_address_from_handle(handle);
-
-	//	//Deallocate previously allocated memory  
-	//	segment.deallocate(msg);
-	//}
-}
-
-
-//创建命名共享内存对象
-//你可以在共享内存段中创建对象，给它们string类型的名字以便其他进程能够找到它们，使用它们，并且当对象不再使用时从内存段中删除它们
-
-//int CBoostClasstest::share_memory_002()
-//{
-//	using namespace boost::interprocess;
-//	typedef std::pair<double, int> MyType;
-//
-//	{
-//		//Remove shared memory on construction and destruction  
-//		struct shm_remove
-//		{
-//			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-//			~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-//		} remover;
-//
-//		//Construct managed shared memory  
-//		managed_shared_memory segment(create_only, "MySharedMemory", 65536);
-//
-//		//Create an object of MyType initialized to {0.0, 0}  
-//		MyType *instance = segment.construct<MyType>
-//			("MyType instance")  //name of the object  
-//			(0.0, 0);            //ctor first argument 
-//								 //Create an array of 10 elements of MyType initialized to {0.0, 0}  
-//
-//		MyType *array = segment.construct<MyType>
-//			("MyType array")     //name of the object  
-//			[10]                 //number of elements  
-//		(0.0, 0);            //Same two ctor arguments for all objects 
-//
-//		//Create an array of 3 elements of MyType initializing each one  
-//		//to a different value {0.0, 0}, {1.0, 1}, {2.0, 2}...  
-//		float float_initializer[3] = { 0.0, 1.0, 2.0 };
-//		int   int_initializer[3] = { 0, 1, 2 };
-//
-//		MyType *array_it = segment.construct_it<MyType>
-//			("MyType array from it")   //name of the object  
-//			[3]                        //number of elements  
-//		(&float_initializer[0]    //Iterator for the 1st ctor argument  
-//			, &int_initializer[0]);    //Iterator for the 2nd ctor argument 
-//									   //Launch child process  
-//		std::string s(argv[0]); s += " child ";
-//		if (0 != std::system(s.c_str()))
-//			return 1;
-//
-//		//Check child has destroyed all objects  
-//		if (segment.find<MyType>("MyType array").first ||
-//			segment.find<MyType>("MyType instance").first ||
-//			segment.find<MyType>("MyType array from it").first)
-//			return 1;
-//	}
-//	{
-//		//Open managed shared memory  
-//		managed_shared_memory segment(open_only, "MySharedMemory");
-//
-//		std::pair<MyType*, managed_shared_memory::size_type> res;
-//
-//		//Find the array  
-//		res = segment.find<MyType>("MyType array");
-//		//Length should be 10  
-//		if (res.second != 10) return 1;
-//
-//		//Find the object  
-//		res = segment.find<MyType>("MyType instance");
-//		//Length should be 1  
-//		if (res.second != 1) return 1;
-//
-//		//Find the array constructed from iterators  
-//		res = segment.find<MyType>("MyType array from it");
-//		//Length should be 3  
-//		if (res.second != 3) return 1;
-//
-//		//We're done, delete all the objects  
-//		segment.destroy<MyType>("MyType array");
-//		segment.destroy<MyType>("MyType instance");
-//		segment.destroy<MyType>("MyType array from it");
-//	}
-//}
-//
-////Boost.Interprocess提供offset_ptr智能指针家族做为一个偏移指针，它用来存储偏移指针地址与对象地址的距离。当offset_ptr置于共享内存段中时，
-////它能安全的指向这块共享内存段中的对象，甚至当内存段在不同的进程映射到不同的基地址时也能正常工作。
-////这使得带指针成员的对象能够放置在共享内存中。例如，如果我们想在共享内存中创建一个链表
-//int CBoostClasstest::share_memory_003()
-//{
-//	using namespace boost::interprocess;
-//
-//	//Shared memory linked list node  
-//	struct list_node
-//	{
-//		offset_ptr<list_node> next;
-//		int                   value;
-//	};
-//
-//	//Remove shared memory on construction and destruction  
-//	struct shm_remove
-//	{
-//		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-//		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-//	} remover;
-//
-//	//Create shared memory  
-//	managed_shared_memory segment(create_only,
-//		"MySharedMemory",  //segment name  
-//		65536);
-//
-//	//Create linked list with 10 nodes in shared memory  
-//	offset_ptr<list_node> prev = 0, current, first;
-//
-//	int i;
-//	for (i = 0; i < 10; ++i, prev = current) {
-//		current = static_cast<list_node*>(segment.allocate(sizeof(list_node)));
-//		current->value = i;
-//		current->next = 0;
-//
-//		if (!prev)
-//			first = current;
-//		else
-//			prev->next = current;
-//	}
-//
-//	//Communicate list to other processes  
-//	//. . .  
-//	//When done, destroy list  
-//	for (current = first; current; /**/) {
-//		prev = current;
-//		current = current->next;
-//		segment.deallocate(prev.get());
-//	}
-//
-//}
-//
-////http://blog.csdn.net/great3779/article/details/7222202
-///*Boost.Interprocess允许在共享内存和内存映射文件中创建复杂的对象。例如，我们可以在共享内存中
-//创建类STL容器。为了做到这点，我们仅需创建一个特殊（控制）的共享内存片段，申明一个
-//Boost.Interprocess分配器然后创建像其他对象一样在共享内存中创建vector*/
-//
-//using namespace boost::interprocess;
-//using namespace std;
-//int CBoostClasstest::share_memory_004()
-//{
-//
-//	//Define an STL compatible allocator of ints that allocates from the managed_shared_memory.  
-//	//This allocator will allow placing containers in the segment  
-//	typedef allocator<int, managed_shared_memory::segment_manager>  ShmemAllocator;
-//
-//	//Alias a vector that uses the previous STL-like allocator so that allocates  
-//	//its values from the segment  
-//	typedef vector<int, ShmemAllocator> MyVector;
-//
-//	{
-//		struct shm_remove
-//		{
-//			shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-//			~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
-//		} remover;
-//
-//		//Create a new segment with given name and size  
-//		boost::interprocess::managed_shared_memory segment(create_only, "MySharedMemory", 65536);
-//
-//		//Initialize shared memory STL-compatible allocator  
-//		const ShmemAllocator alloc_inst(segment.get_segment_manager());
-//
-//		//Construct a vector named "MyVector" in shared memory with argument alloc_inst  
-//		MyVector *myvector = segment.construct<MyVector>("MyVector")(alloc_inst);
-//
-//		for(int i = 0; i < 100; ++i)  //Insert data in the vector  
-//			myvector->push_back(i);
-//
-//		//Launch child process  
-//		std::string s(argv[0]);
-//		s += " child ";
-//		if(0 != std::system(s.c_str()))
-//			return 1;
-//
-//		//Check child has destroyed the vector  
-//		if(segment.find<MyVector>("MyVector").first)
-//			return 1;
-//	}
-//
-//
-//	{
-//		//Child process  
-//		//Open the managed segment  
-//		managed_shared_memory segment(open_only, "MySharedMemory");
-//
-//		//Find the vector using the c-string name  
-//		MyVector *myvector = segment.find<MyVector>("MyVector").first;
-//
-//		//Use vector in reverse order  
-//		std::sort(myvector->rbegin(), myvector->rend());
-//
-//		//When done, destroy the vector from the segment  
-//		segment.destroy<MyVector>("MyVector");
-//	}
-//}
-
-
-int CBoostClasstest::hardware()
-{
-	int hardware_concurrency_ = boost::thread::hardware_concurrency();
-	return 0;
 }

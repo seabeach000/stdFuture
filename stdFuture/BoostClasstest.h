@@ -16,9 +16,7 @@ public:
 	void  thread_specific_ptrClassTest();
 	//使用共享内存做为一个匿名内存块池
 	int share_memory_001();
-	//int share_memory_002();
-	//int share_memory_003();
-	//int share_memory_004();
 	int hardware();
+	void boostFormatString();
 };
 

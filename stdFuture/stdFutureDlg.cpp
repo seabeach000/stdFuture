@@ -363,7 +363,8 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 void CstdFutureDlg::OnBnClickedButtonBthread()
 {
 	// TODO: 在此添加控件通知处理程序代码
-
+	//wxg2019年8月9日09:33:11
+	m_BoostClassTest.boostFormatString();
 	//wxg20170215
 	//m_BoostShareMem.file_mapping_test_01();//共享内存正常
 	m_BoostClassTest.Convert16StringTodata();
