@@ -251,3 +251,4 @@ ModelManifest.xml
 /demuxing_decode/7CRY0157.mxf
 /demuxing_decode/audio
 /demuxing_decode/video
+videoFilter/videoFilter.vcxproj.filters

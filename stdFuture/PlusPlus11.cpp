@@ -282,6 +282,7 @@ void CPlusPlus11::variableArray(unsigned int x, unsigned int y)
 }
 
 typedef std::chrono::high_resolution_clock c_t;
+using namespace std::chrono;
 void CPlusPlus11::stdtime()
 {
 	auto time1(c_t::now());
@@ -297,6 +298,18 @@ void CPlusPlus11::stdtime()
 	std::wstring name = audio_layouts;
 	std::transform(name.begin(), name.end(), name.begin(), std::tolower);
 	wcout << name << endl;
+
+	system_clock::time_point frame_start_time = (system_clock::time_point)(
+		duration_cast<seconds>(system_clock::now().time_since_epoch() + seconds{ 5 }));
+	int64_t timeout = (uint64_t)duration_cast<nanoseconds>(
+		(frame_start_time).time_since_epoch()).count();
+	system_clock::time_point frame_start_time01 = (system_clock::time_point)(
+		duration_cast<seconds>(system_clock::now().time_since_epoch() + milliseconds{ 5000 }));
+	int64_t timeout01 = (uint64_t)duration_cast<nanoseconds>(
+		(frame_start_time01).time_since_epoch()).count();
+
+	cout << " timeout " << timeout << " timeout01 " << timeout01 << " delta " << timeout - timeout01 <<endl;
+
 }
 
 std::wstring CPlusPlus11::lrReturn()

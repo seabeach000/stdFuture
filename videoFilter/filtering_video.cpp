@@ -45,7 +45,8 @@ extern "C"
 
 #include <windows.h>
 
-const char *filter_descr = "scale=78:24,transpose=cclock";
+//const char *filter_descr = "scale=78:24,transpose=cclock";
+const char *filter_descr = "yadif=1:-1";
 /* other way:
    scale=78:24 [scl]; [scl] transpose=cclock // assumes "[in]" and "[out]" to be input output pads respectively
  */
@@ -57,7 +58,7 @@ AVFilterContext *buffersrc_ctx;
 AVFilterGraph *filter_graph;
 static int video_stream_index = -1;
 static int64_t last_pts = AV_NOPTS_VALUE;
-
+static int64_t first_pts = -1;
 static int open_input_file(const char *filename)
 {
     int ret;
@@ -260,10 +261,19 @@ int main(int argc, char **argv)
                 }
 
                 frame->pts = frame->best_effort_timestamp;
+				if (first_pts == -1)
+				{
+					first_pts = frame->pts;
+				}
 
+				frame->pts -= first_pts;
                 /* push the decoded frame into the filtergraph */
 				//wxg20190812
-				printf("buffersrc_ctx: %ld \n", frame->pts);
+				printf("buffersrc_ctx: %ld \n", frame->pts/3600);
+				if (!frame->interlaced_frame)
+				{
+					printf("buffersrc_ctx: %ld  not interlaced \n", frame->pts);
+				}
                 if (av_buffersrc_add_frame_flags(buffersrc_ctx, frame, AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
                     av_log(NULL, AV_LOG_ERROR, "Error while feeding the filtergraph\n");
                     break;
@@ -276,7 +286,7 @@ int main(int argc, char **argv)
                         break;
                     if (ret < 0)
                         goto end;
-					printf("buffersink_ctx: %ld \n", frame->pts);
+					printf("buffersink_ctx: %ld \n", (filt_frame->pts - first_pts)/3600);
                     //display_frame(filt_frame, buffersink_ctx->inputs[0]->time_base);
                     av_frame_unref(filt_frame);
                 }
@@ -285,6 +295,25 @@ int main(int argc, char **argv)
         }
         av_packet_unref(&packet);
     }
+
+	printf("buffersrc_ctx: nullptr  %ld \n", 0);
+	//if (av_buffersrc_add_frame_flags(buffersrc_ctx, nullptr, AV_BUFFERSRC_FLAG_KEEP_REF) < 0) {
+	//	av_log(NULL, AV_LOG_ERROR, "Error while feeding the filtergraph\n");
+	//}
+	if (av_buffersrc_add_frame(buffersrc_ctx, nullptr) < 0) {
+		av_log(NULL, AV_LOG_ERROR, "Error while feeding the filtergraph\n");
+	}
+	while (1) {
+		ret = av_buffersink_get_frame(buffersink_ctx, filt_frame);
+		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+			break;
+		if (ret < 0)
+			goto end;
+		printf("buffersink_ctx: %ld \n", (filt_frame->pts - first_pts) / 3600);
+		//display_frame(filt_frame, buffersink_ctx->inputs[0]->time_base);
+		av_frame_unref(filt_frame);
+	}
+
 end:
     avfilter_graph_free(&filter_graph);
     avcodec_free_context(&dec_ctx);
