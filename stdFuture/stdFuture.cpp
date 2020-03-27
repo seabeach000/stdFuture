@@ -115,7 +115,7 @@ BOOL CstdFutureApp::InitInstance()
 	USHORT groupCnt;
 	USHORT groupAry;
 	ret = GetProcessGroupAffinity(GetCurrentProcess(), &groupCnt, &groupAry);
-	std::cout << "GetProcessGroupAffinity   " << "groupAry   " << groupAry << "  groupCnt   " << groupCnt << std::endl;
+	std::cout << "GetProcessGroupAffinity   " << "groupAry   " << std::setbase(10) << groupAry << "  groupCnt   " << groupCnt << std::endl;
 
 	std::thread thd(printInfo);
 	GROUP_AFFINITY GroupAffinity;
