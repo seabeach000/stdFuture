@@ -12,8 +12,6 @@
 #include "BoostClasstest.h"
 #include "Lambdatest.h"
 #include "BoostSharedMemory.h"
-#include "Houjie.h"
-
 //start全局定义函数都写在这里
 typedef std::function<void ()> fp;
 
@@ -50,7 +48,6 @@ public:
 	CBoostClasstest m_BoostClassTest;
 	CBoostSharedMemory m_BoostShareMem;
 	CLambdatest m_lambdaTest;
-	Houjie      m_test;
 public:
 	//future
 	afx_msg void OnBnClickedButtonfuture();
@@ -71,5 +68,4 @@ public:
 	afx_msg void OnBnClickedButtonStaticvariable();
 	afx_msg void OnBnClickedButtoncplus();
 	afx_msg void OnBnClickedButtonspecficptr();
-	afx_msg void OnBnClickedButton3();
 };

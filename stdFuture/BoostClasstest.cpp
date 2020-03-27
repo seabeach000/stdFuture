@@ -556,15 +556,3 @@ void CBoostClasstest::boostFormatString()
 		<< L"] ";
 	wcout << buffer.str();
 }
-
-void CBoostClasstest::boostFileOperation()
-{
-	std::wstring srcPath = L"F:\\clips123";
-	std::wstring dstPath = L"F:\\clips1";
-
-	std::wstring srcID = L"541";
-	std::wstring dstID = L"542";
-
-
-
-}

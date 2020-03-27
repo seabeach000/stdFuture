@@ -63,30 +63,6 @@
     <ClInclude Include="receiver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ConditionVar.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Houjie.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="arrayW.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="vectorW.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="listW.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="forwardlistW.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="dequeueW.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdFuture.cpp">
@@ -117,27 +93,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="receiver.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ConditionVar.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Houjie.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="arrayW.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="vectorW.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="listW.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="forwardlistW.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="dequeueW.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

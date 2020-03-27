@@ -9,7 +9,6 @@
 #include <boost/thread/thread.hpp>
 #include "StaticTest.h"
 #include "PlusPlus11.h"
-#include "ConditionVar.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -76,7 +75,6 @@ BEGIN_MESSAGE_MAP(CstdFutureDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_StaticVariable, &CstdFutureDlg::OnBnClickedButtonStaticvariable)
 	ON_BN_CLICKED(IDC_BUTTONCPlus, &CstdFutureDlg::OnBnClickedButtoncplus)
 	ON_BN_CLICKED(IDC_BUTTON_specficPTR, &CstdFutureDlg::OnBnClickedButtonspecficptr)
-	ON_BN_CLICKED(IDC_BUTTON3, &CstdFutureDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -415,19 +413,11 @@ void CstdFutureDlg::OnBnClickedButtonStaticvariable()
 void CstdFutureDlg::OnBnClickedButtoncplus()
 {
 	// TODO: 在此添加控件通知处理程序代码
-
-	//2019年10月23日16:32:29
-	ConditionVar var;
-	var.mainTest();
-
-
-	///////////////////////////
 	CPlusPlus11 cllTest;
 	cllTest.stdmove();
 	cllTest.autoTest();
 	cllTest.decltypeTest();
 	cllTest.stdtime();
-	cllTest.overhide();
 }
 
 
@@ -437,11 +427,4 @@ void CstdFutureDlg::OnBnClickedButtonspecficptr()
 	m_BoostClassTest.thread_specific_ptrClassTest();
 	return;
 
-}
-
-
-void CstdFutureDlg::OnBnClickedButton3()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	m_test.testAll();
 }

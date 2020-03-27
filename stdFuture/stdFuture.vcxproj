@@ -200,16 +200,9 @@
   <ItemGroup>
     <ClInclude Include="..\utility\utf8conv.h" />
     <ClInclude Include="..\utility\utf8conv_inl.h" />
-    <ClInclude Include="arrayW.h" />
     <ClInclude Include="BoostClasstest.h" />
     <ClInclude Include="BoostSharedMemory.h" />
-    <ClInclude Include="common.h" />
-    <ClInclude Include="ConditionVar.h" />
-    <ClInclude Include="dequeueW.h" />
-    <ClInclude Include="forwardlistW.h" />
-    <ClInclude Include="Houjie.h" />
     <ClInclude Include="Lambdatest.h" />
-    <ClInclude Include="listW.h" />
     <ClInclude Include="PlusPlus11.h" />
     <ClInclude Include="receiver.h" />
     <ClInclude Include="Resource.h" />
@@ -220,18 +213,11 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="thread_specific_ptr.h" />
     <ClInclude Include="timer.h" />
-    <ClInclude Include="vectorW.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="arrayW.cpp" />
     <ClCompile Include="BoostClasstest.cpp" />
     <ClCompile Include="BoostSharedMemory.cpp" />
-    <ClCompile Include="ConditionVar.cpp" />
-    <ClCompile Include="dequeueW.cpp" />
-    <ClCompile Include="forwardlistW.cpp" />
-    <ClCompile Include="Houjie.cpp" />
     <ClCompile Include="Lambdatest.cpp" />
-    <ClCompile Include="listW.cpp" />
     <ClCompile Include="PlusPlus11.cpp" />
     <ClCompile Include="receiver.cpp" />
     <ClCompile Include="StaticTest.cpp" />
@@ -244,7 +230,6 @@
     <ClCompile Include="stdFuture.cpp" />
     <ClCompile Include="stdFutureDlg.cpp" />
     <ClCompile Include="thread_specific_ptr.cpp" />
-    <ClCompile Include="vectorW.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="stdFuture.rc" />

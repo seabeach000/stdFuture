@@ -18,6 +18,5 @@ public:
 	int share_memory_001();
 	int hardware();
 	void boostFormatString();
-	void boostFileOperation();
 };
 
