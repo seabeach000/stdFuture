@@ -13,6 +13,73 @@
 #include <cctype>
 
 using namespace std;
+
+class base {
+public:
+	void func()
+	{
+		cout << "func1()" << endl;
+	}
+	void func(int x)
+	{
+		cout << "func2()" << endl;
+	}
+	void func10()
+	{
+		cout << "func10()" << endl;
+	}
+};
+
+class son : public base {
+public:
+	using base::func;    //若没有此句，func()和func(int x)将会被隐藏
+	void func(int x, int y)
+	{
+		cout << "func()3" << endl;
+	}
+};
+
+void CPlusPlus11::overhide()
+{
+	base a;
+	a.func();
+	a.func(1);
+	son b;
+	b.func(1, 1);
+	b.func();
+	b.func(1);
+	b.func10(); //同名覆盖，这个不同命可以直接调用基类的函数
+}
+
+void CPlusPlus11::typeID()
+{
+	class Base { };
+	struct STU { };
+		//获取一个普通变量的类型信息
+		int n = 100;
+		const type_info &nInfo = typeid(n);
+		cout << nInfo.name() << " | " << nInfo.raw_name() << " | " << nInfo.hash_code() << endl;
+		//获取一个字面量的类型信息
+		const type_info &dInfo = typeid(25.65);
+		cout << dInfo.name() << " | " << dInfo.raw_name() << " | " << dInfo.hash_code() << endl;
+		//获取一个对象的类型信息
+		Base obj;
+		const type_info &objInfo = typeid(obj);
+		cout << objInfo.name() << " | " << objInfo.raw_name() << " | " << objInfo.hash_code() << endl;
+		//获取一个类的类型信息
+		const type_info &baseInfo = typeid(Base);
+		cout << baseInfo.name() << " | " << baseInfo.raw_name() << " | " << baseInfo.hash_code() << endl;
+		//获取一个结构体的类型信息
+		const type_info &stuInfo = typeid(struct STU);
+		cout << stuInfo.name() << " | " << stuInfo.raw_name() << " | " << stuInfo.hash_code() << endl;
+		//获取一个普通类型的类型信息
+		const type_info &charInfo = typeid(char);
+		cout << charInfo.name() << " | " << charInfo.raw_name() << " | " << charInfo.hash_code() << endl;
+		//获取一个表达式的类型信息
+		const type_info &expInfo = typeid(20 * 45 / 4.5);
+		cout << expInfo.name() << " | " << expInfo.raw_name() << " | " << expInfo.hash_code() << endl;
+}
+
 CPlusPlus11::CPlusPlus11()
 {
 }
@@ -40,6 +107,8 @@ auto Multiply(U u, V v) -> decltype(u*v)    // Note -> after the function bracet
 
 void CPlusPlus11::decltypeTest()
 {
+	typeID();
+
 	decltype(add(5, 6)) var = 5;   //decltype(add(5, 6)) 表示的是add函数的返回类型，就是int
 	cout << typeid(var).name() << endl; // This will print int
 
@@ -83,7 +152,7 @@ void CPlusPlus11::autoTest()
 		jobs[n*MAX_THREADS / count].push_back(n);
 	for (int i = 0;i<MAX_THREADS;++i)
 	{
-		for (auto k:jobs[i])
+		for (auto k:jobs[i])  //jobs[i]是一个vector，里面只有一个元素，所以遍历一次
 		{
 			std::cout << "k= " << k << " jobs[" << i << "]= " << jobs[i][0] << std::endl;
 		}
@@ -120,6 +189,9 @@ std::string readFileContent()
 	std::string filecontent = "oldContent";
 	return filecontent;
 }
+
+//右值引用的意义通常解释为两大作用：移动语义和完美转发
+
 void CPlusPlus11::stdmove()
 {
 
@@ -133,6 +205,32 @@ void CPlusPlus11::stdmove()
 	//传入的参数是一个临时对象，可以挪用其数据，于是std::string::operator =(std::string&&)的实现代码中，会置空形参，
 	//同时将原本保存在中形参中的数据移动到自身。不光是临时变量，只要是你认为不再需要的数据，都可以考虑用std::move移动
 	std::string ss = std::move(readFileContent());
+
+	string A("abc");
+	string AA("abc");
+	string&& Rval = std::move(A);
+	string& Lval = AA;//std::move(AA);
+	string B(Rval);    // this is a copy , not move.
+	cout << A << endl;   // output "abc"
+	string C(std::forward<string>(Rval));  // move.
+	std::string D = std::forward<string>(Lval);  //这里也是一个move
+	std::string E = std::forward<string>(B);  //move
+	cout << A << endl;       /* output "" */
+	cout << AA << endl;       /* output "" */
+
+	string str = "asd";
+	string& str1 = std::move(str);
+	string str2 = std::move(str);
+
+	//int &i = 6; // error，lvalue reference 不能引用字面常量	
+				// error: cannot bind non-const lvalue reference of type ‘int&’ to an rvalue of type ‘int’
+	const int &j = 6; // ok，可以将一个临时对象绑定到一个 const 的左值引用
+
+	//X &ref_a = X(); 		// error
+	//const X &ref_ca = X();	// ok，可以将一个临时对象绑定到一个 const 的左值引用
+
+	int &&rref = 6;		// ok，rvalue reference 可以引用：字面常量
+	//X &&rref_a = X();	// ok，rvalue reference 可以引用：临时对象
 }
 template<typename T>
 void swap(T& a, T& b)
@@ -293,11 +391,11 @@ void CPlusPlus11::stdtime()
 	static const double H_PI = std::atan(1.0)*2.0;
 
 	std::wstring audio_layouts = lrReturn();
-	wcout << audio_layouts << endl;
+	//wcout << audio_layouts << endl;
 
 	std::wstring name = audio_layouts;
 	std::transform(name.begin(), name.end(), name.begin(), std::tolower);
-	wcout << name << endl;
+	//wcout << name << endl;
 
 	system_clock::time_point frame_start_time = (system_clock::time_point)(
 		duration_cast<seconds>(system_clock::now().time_since_epoch() + seconds{ 5 }));
@@ -323,3 +421,4 @@ std::wstring CPlusPlus11::lrReturn()
 		</audio>
 	)";
 }
+
