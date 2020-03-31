@@ -365,6 +365,8 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 void CstdFutureDlg::OnBnClickedButtonBthread()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	//2020年3月27日10:55:24
+	m_BoostClassTest.boostFileOperation();
 	//wxg2019年8月9日09:33:11
 	m_BoostClassTest.boostFormatString();
 	//wxg20170215

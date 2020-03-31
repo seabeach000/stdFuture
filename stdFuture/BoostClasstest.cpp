@@ -26,6 +26,8 @@
 #include <inttypes.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "thread_specific_ptr.h"
 
@@ -559,12 +561,33 @@ void CBoostClasstest::boostFormatString()
 
 void CBoostClasstest::boostFileOperation()
 {
-	std::wstring srcPath = L"F:\\clips123";
-	std::wstring dstPath = L"F:\\clips1";
+	// L"F:\\clips123",L"\\\\DESKTOP-F5CPG2I\\Clips";
+	// L"\\\\127.0.0.1\\Clips";
+	//这三种都是可以的,下面/这种斜杠也是可以的
+	std::wstring srcPath = L"//127.0.0.1/Clips";
+	std::wstring dstPath = L"F:/clips1";
 
 	std::wstring srcID = L"541";
 	std::wstring dstID = L"542";
 
-
+	//这个函数是可以遍历所有子目录的
+	for (boost::filesystem::recursive_directory_iterator itr(srcPath), end; itr != end; ++itr)
+	{
+		auto path = itr->path();
+		auto file = path.stem().wstring();
+		if (boost::iequals(file,srcID))
+		{
+			if (!boost::filesystem::is_regular_file(path))
+				break;
+			int64_t filesize = boost::filesystem::file_size(path);
+			wchar_t buf[9] = { 0 };
+			swprintf(buf, 9, L"%08I64x", filesize);
+			std::wstring strFilesize = buf;
+			wcout << L"filesize " << strFilesize;
+			boost::filesystem::path absDstPath = dstPath + L"\\" + dstID;
+			system::error_code ec;
+			boost::filesystem::copy_file(path, absDstPath, boost::filesystem::copy_option::overwrite_if_exists,ec);
+		}
+	}
 
 }
