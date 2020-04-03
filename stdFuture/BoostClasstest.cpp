@@ -579,6 +579,12 @@ void CBoostClasstest::boostFileOperation()
 		{
 			if (!boost::filesystem::is_regular_file(path))
 				break;
+			std::time_t modifyTime = boost::filesystem::last_write_time(path);
+			int64_t ll = modifyTime * 10000000 + 116444736000000000;
+			FILETIME ft;
+			ft.dwLowDateTime = (DWORD)ll;
+			ft.dwHighDateTime = ll >> 32;
+
 			int64_t filesize = boost::filesystem::file_size(path);
 			wchar_t buf[9] = { 0 };
 			swprintf(buf, 9, L"%08I64x", filesize);
