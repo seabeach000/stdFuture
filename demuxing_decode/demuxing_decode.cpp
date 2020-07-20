@@ -84,10 +84,12 @@ static int decode_packet(int *got_frame, int cached)
 				return -1;
 			}
 
-			printf("video_frame%s n:%d coded_n:%d\n",
-				cached ? "(cached)" : "",
-				video_frame_count++, frame->coded_picture_number);
-
+			if (*got_frame)
+			{
+				printf("video_frame%s n:%d coded_n:%d video_pts:%I64d\n",
+					cached ? "(cached)" : "",
+					video_frame_count++, frame->coded_picture_number, frame->pts);
+			}
 			/* copy decoded frame to destination buffer:
 			* this is required since rawvideo expects non aligned data */
 			av_image_copy(video_dst_data, video_dst_linesize,
@@ -181,6 +183,7 @@ static int open_codec_context(int *stream_idx,
 
 		/* Init the decoders, with or without reference counting */
 		av_dict_set(&opts, "refcounted_frames", refcount ? "1" : "0", 0);
+		av_dict_set(&opts, "threads"," 8", 0);
 		if ((ret = avcodec_open2(*dec_ctx, dec, &opts)) < 0) {
 			fprintf(stderr, "Failed to open %s codec\n",
 				av_get_media_type_string(type));
@@ -317,6 +320,7 @@ int main(int argc, char **argv)
 		printf("Demuxing audio from file '%s' into '%s'\n", src_filename, audio_dst_filename);
 
 	//2018Äê9ÔÂ3ÈÕ11:05:09 wxg-test
+	/*
 	try {
 		int ret = 0;
 		ret = avformat_seek_file(
@@ -334,6 +338,8 @@ int main(int argc, char **argv)
 	{
 		int aa = 0;
 	}
+	*/ //wxg - test end
+
 	/* read frames from the file */
 	while (av_read_frame(fmt_ctx, &pkt) >= 0) {
 		AVPacket orig_pkt = pkt;

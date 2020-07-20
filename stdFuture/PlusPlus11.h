@@ -18,6 +18,7 @@ public:
 	std::wstring lrReturn();
 	void overhide();
 	void typeID();
+	void generalTest();
 	//1）常对象格式：const 类名 对象名
 	//2）常对象只能调用常函数，不能调用普通函数
 };

@@ -430,6 +430,7 @@ void CstdFutureDlg::OnBnClickedButtoncplus()
 	cllTest.decltypeTest();
 	cllTest.stdtime();
 	cllTest.overhide();
+	cllTest.generalTest();
 }
 
 

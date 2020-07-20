@@ -80,6 +80,24 @@ void CPlusPlus11::typeID()
 		cout << expInfo.name() << " | " << expInfo.raw_name() << " | " << expInfo.hash_code() << endl;
 }
 
+void CPlusPlus11::generalTest()
+{
+	int rate1 = 73;
+	int rate2 = 159;
+	float exponential = rate1 / 32.0 - 2;
+	double tmp = pow(10, exponential);
+
+	float exponential_1 = rate1 + 1 / 32.0 - 2;
+	double tmp1 = pow(10, exponential_1);
+	float exponential_2 = rate1 / 32.0 - 2;
+	double tmp2 = pow(10, exponential_2);
+	double tmp3 = 256 * tmp1 * tmp2;
+	double tmp4 = rate2 / tmp3;
+
+	int  speedvalue = (int)ceil(tmp + tmp4);
+	std::cout << speedvalue << endl;
+}
+
 CPlusPlus11::CPlusPlus11()
 {
 }
