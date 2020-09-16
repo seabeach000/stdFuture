@@ -6,6 +6,7 @@
 #include<immintrin.h>
 #include<stdio.h>
 
+#include <intrin.h>
 /**
 * Author: TripleZ<me@triplez.cn>
 * Date: 2018-08-21
@@ -14,8 +15,28 @@ https://github.com/Triple-Z/AVX-AVX2-Example-Code
 
 #include <immintrin.h>
 #include <stdio.h>
+#include <emmintrin.h>
+#include <stdint.h>
 
 int main(int argc, char const *argv[]) {
+
+	uint16_t YTH = 562, YTL = 917;
+	uint16_t* pYTH = &YTH, *pYTL = &YTL;
+	__m256i mm = _mm256_loadu2_m128i((const __m128i*)(pYTH), (const __m128i*)pYTL);
+	//_mm256_set_m128i(_mm_loadu_si128(hiaddr), _mm_loadu_si128(loaddr))
+
+	__m256i mm1 = _mm256_inserti128_si256(_mm256_castsi128_si256(
+		_mm_loadu_si128((__m128i*)pYTL)),
+		_mm_loadu_si128((__m128i*)pYTH), 1);
+		////////////////////////////////////////////////////////
+	__m128i aaa = _mm_setr_epi64x(0x8000000000000000, 0x00);
+
+	__m128i bbb = _mm_setr_epi32(0x00, 0x80000000, 0x00,0x00);
+
+	return 0;
+}
+
+int main3(int argc, char const *argv[]) {
 
 	// Single-precision 8x32 permutation with 256-bit vector and 32-bit integers control vector (AVX2)
 	__m256 float_256_vec_0 = _mm256_set_ps(8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0);
