@@ -3,28 +3,35 @@
 
 #include "stdafx.h"
 
-extern "C"
-{
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
-#include <libavutil/timestamp.h>
-#include <libavformat/avformat.h>
-}
+//extern "C"
+//{
+//#define __STDC_CONSTANT_MACROS
+//#define __STDC_LIMIT_MACROS
+//#include <libavutil/timestamp.h>
+//#include <libavformat/avformat.h>
+//}
 
-char av_error[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-#define av_err2str(errnum) \
-    av_make_error_string(av_error, AV_ERROR_MAX_STRING_SIZE, errnum)
+#include <libavutil/timestamp.h>
+#include <libavutil/mathematics.h>
+#include <libavformat/avformat.h>
+
+//c++编译环境不允许这样赋值 解决方案右键，属性c / c++那一列的高级，编译为c这个问题就能解决了
+//如果想要用c++编译就分开操作，先生成左值表达式再作为右值进行赋值 int a[2] = { 10,20 }; pt1 = a;
+
+//char av_error[AV_ERROR_MAX_STRING_SIZE] = { 0 };
+//#define av_err2str(errnum) \
+    //av_make_error_string(av_error, AV_ERROR_MAX_STRING_SIZE, errnum)
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt, const char *tag)
 {
 	AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
 
-	//printf("%s: pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
-	//	tag,
-	//	av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
-	//	av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
-	//	av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
-	//	pkt->stream_index);
+	printf("%s: pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
+		tag,
+		av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+		av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+		av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
+		pkt->stream_index);
 }
 
 int main(int argc, char **argv)
@@ -120,6 +127,14 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Error occurred when opening output file\n");
 		goto end;
 	}
+
+	int aa = avformat_seek_file(
+		ifmt_ctx,
+		0,
+		0,
+		39,
+		1000,
+		AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY | AVSEEK_FLAG_FRAME);
 
 	while (1) {
 		AVStream *in_stream, *out_stream;
