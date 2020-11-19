@@ -215,9 +215,14 @@ void CstdFutureDlg::OnBnClickedButtonfuture()
 	std::chrono::milliseconds span(100);
 	while (fut01.wait_for(span) == std::future_status::timeout)
 		std::cout << '.';
-
-	bool ret = fut01.get();      // waits for is_prime to return
-
+	bool ret = false;
+	//ret = fut01.get();      // waits for is_prime to return
+	std::shared_future<bool> result;
+	if (fut01.valid())
+	{
+		result = fut01.share();
+	}
+	ret = result.get();
 	if (ret) std::cout << "It is prime!\n";
 	else std::cout << "It is not prime.\n";
 
@@ -343,6 +348,12 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 
 	std::cout << "\n After negate twice:";
 	for_each(ivec.begin(), ivec.end(), Printer());
+
+	//给他一个迭代的起始位置和这个起始位置所对应的停止位置。  例如下方函数中的  str.begin(), str.end()
+	//最后一个参数：
+	//传入一个回调函数，如果 回调函数函数返回真，则将当前所指向的参数，移到尾部（不稳定的数据移动）。
+	//返回值：
+	//被移动区域的首个元素 iterator
 	//删除掉vector中小于5的所有元素，注意remove_if并不改变容器的大小，所以还需要调用erase来删除
 	std::vector<int>::iterator iter = std::remove_if(ivec.begin(), ivec.end(), std::bind2nd(std::less<int>(), 5));
 	ivec.erase(iter, ivec.end());

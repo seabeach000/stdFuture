@@ -12,6 +12,8 @@
 
 #include <cctype>
 
+#include <unordered_map>
+
 using namespace std;
 
 class base {
@@ -80,8 +82,111 @@ void CPlusPlus11::typeID()
 		cout << expInfo.name() << " | " << expInfo.raw_name() << " | " << expInfo.hash_code() << endl;
 }
 
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+
+PACK(struct ancillary_rtp_header {
+	//rtp_header s_rtp_hader;
+	uint16_t extended_sequence_number;  // Extended Sequence Number: 16 bits
+	uint16_t length;  // Length: 16 bits
+	uint8_t anc_count;  // ANC_Count: 8 bits
+	uint32_t reserved_16_to_21_6bit : 6;  // reserved: 6 of 22 bits
+	uint32_t f : 2;  // F: 2 bits
+	uint32_t reserved_0_to_15_16bit : 16;  // reserved: 16 of 22 bits
+});  ////   应该是在这个结构的前面加上push后面加上pop这样
+
+//#ifndef aligined
+//#define aligined(a) __attribute__((__aligned__(a)))
+//#endif
+
+typedef std::unordered_map<char, int> Mymap;
 void CPlusPlus11::generalTest()
 {
+
+
+	///////////////////////////////////////////////////////////////////////////
+	std::string s = "barfoothefoobarfooman";
+	std::vector<string> words = { "foo","bar","foo"};
+	unordered_map<string, int> m, aux;
+	for (int i=0;i<words.size();i++)
+	{
+		m[words[i]]++;
+	}
+	aux = m;
+	int num = words[0].length();
+	int count = words.size();
+
+	vector<int> ans;
+	if (num*count > s.length()) return;
+
+	for (int i = 0; i < (s.length() - num * count + 1); i++)
+	{
+		if (aux.find(s.substr(i,num)) != aux.end())
+		{
+			aux[s.substr(i, num)]--;
+			int rep = 1;
+			int j = i + num;
+
+			while (1)
+			{
+				if (aux[s.substr(j, num)] > 0)
+				{
+					rep++;
+					aux[s.substr(j, num)]--;
+				}
+				else
+					break;
+				j = j + num;
+			}
+
+			if (rep ==count)
+			{
+				ans.push_back(i);
+			}
+			aux = m;
+		}
+	}
+
+
+	for (const auto n : m)
+	{
+		std::cout << "key:[" << n.first<<"] value:[" << n.second << "]\n";
+	}
+
+	Mymap c1;
+
+	c1.insert(Mymap::value_type('a', 1));	
+	c1.insert(Mymap::value_type('c', 3));
+	c1.insert(Mymap::value_type('b', 2));
+
+	// display contents " [c 3] [b 2] [a 1]"
+	for (Mymap::const_iterator it = c1.begin();it != c1.end(); ++it)
+		std::cout << " [" << it->first << ", " << it->second << "]";
+	std::cout << std::endl;
+
+	// inspect first two items " [c 3] [b 2]"
+	Mymap::iterator it2 = c1.begin();
+	std::cout << " [" << it2->first << ", " << it2->second << "]";
+	++it2;
+	std::cout << " [" << it2->first << ", " << it2->second << "]";
+	std::cout << std::endl;
+
+	int ww1 =  c1.bucket_count();
+	//int ww2 = c1.bucket_size();
+	int ww3 = c1.max_bucket_count();
+	// inspect bucket containing 'a'
+	Mymap::const_local_iterator lit = c1.begin(c1.bucket('a'));
+	std::cout << " [" << lit->first << ", " << lit->second << "]";
+
+	// display buckets for keys
+	Mymap::size_type bs = c1.bucket('a');
+	std::cout << "bucket('a') == " << bs << std::endl;
+	std::cout << "bucket_size(" << bs << ") == " << c1.bucket_size(bs)
+		<< std::endl;
+
+	Mymap::size_type bs1 = c1.bucket('b');
+
+
+	////////////////////////////////////////////////////////////
 	int rate1 = 73;
 	int rate2 = 159;
 	float exponential = rate1 / 32.0 - 2;
@@ -428,15 +533,53 @@ void CPlusPlus11::stdtime()
 
 }
 
+//wxg2020年10月27日15:43:21
+//https://en.cppreference.com/w/cpp/language/expressions#Literals
+//prefix(optional) R"delimiter( raw_characters )delimiter"
+//raw_characters - Any character sequence, except that it must not contain the closing sequence )delimiter"
+//raw_characters—可以是任何字符序列，但不能包含关闭序列)分隔符，因为现在没有分隔符，所以遇到)"就认为结束了，加上一个分隔符试试，果然可以了
 std::wstring CPlusPlus11::lrReturn()
 {
-	return LR"(
+	std::cout << std::boolalpha
+		<< true << '\n'
+		<< false << '\n'
+		<< std::noboolalpha
+		<< true << '\n'
+		<< false << '\n';
+
+
+	auto R0 = R"("Hello \ world")"; // const char*
+	auto R1 = u8R"("Hello \ world")"; // const char*, encoded as UTF-8
+	auto R2 = LR"("Hello \ world")"; // const wchar_t*
+	auto R3 = uR"("Hello \ world")"; // const char16_t*, encoded as UTF-16
+	auto R4 = UR"("Hello \ world")"; // const char32_t*, encoded as UTF-32
+
+		// Combining string literals with standard s-suffix
+	auto S0 = "hello"s; // std::string
+	auto S1 = u8"hello("")"s; // std::string
+	auto S2 = L"hello"s; // std::wstring
+	auto S3 = u"hello"s; // std::u16string
+	auto S4 = U"hello"s; // std::u32string
+
+	// Combining raw string literals with standard s-suffix
+	auto S5 = R"("Hello \ world")"s; // std::string from a raw const char*
+	auto S6 = u8R"("Hello \ world")"s; // std::string from a raw const char*, encoded as UTF-8
+	auto S7 = LR"aaa("Hello(side) \ world" "222(abc)")aaa"s; // std::wstring from a raw const wchar_t*
+	auto S8 = uR"("Hello \ world")"s; // std::u16string from a raw const char16_t*, encoded as UTF-16
+	auto S9 = UR"("Hello \ world")"s; // std::u32string from a raw const char32_t*, encoded as UTF-32
+
+
+	return LR"fms(
 		<audio>
 			<channel-layouts>
 				<channel-layout name="mono"        type="mono"        num-channels="1" channel-order="FC" />
 				<channel-layout name="stereo"      type="stereo"      num-channels="2" channel-order="FL FR" />
-			</channel-layouts>			
+			</channel-layouts>		
+<mix-configs>
+             <mix-config from-type="stereo"        to-types="5.1+downmix"  mix="FL = FL                | FR = FR                                         | DL = FL | DR = FR" />
+             <mix-config from-type="5.1(side)"     to-types="mono"         mix="FL = 0.192*FL + 0.192*FR + 0.192*FC + 0.038*LFE + 0.192*SL + 0.192*SR" />
+</mix-configs>
 		</audio>
-	)";
+	)fms";
 }
 

@@ -70,6 +70,9 @@ bool some_func(int i, double d) {
 }
 int CBoostClasstest::simpleThread()
 {
+	boost::thread asas;
+	asas.joinable();     //这样也没问题的
+
 	boost::thread thrd(&CBoostClasstest::hello, this);  //这就有个问题，怎么绑定hello的重载函数呢？
 	thrd.join();
 
