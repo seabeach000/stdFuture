@@ -1,0 +1,7 @@
+prefix=/home/wangxingang/wxg20201202/ffmpeg/build
+includedir=${prefix}/include
+
+Name: ffnvcodec
+Description: FFmpeg version of Nvidia Codec SDK headers
+Version: 11.0.10.1
+Cflags: -I${includedir}
