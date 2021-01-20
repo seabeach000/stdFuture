@@ -31,7 +31,7 @@ public:
 		//std::lock_guard其实就是简单的RAII封装，在构造函数中进行加锁，析构函数中进行解锁，这样可以保证函数退出时，锁一定被释放。
 		std::lock_guard<std::mutex> lck(mutex_);
 		dataReady = true;
-		Sleep(2000);
+		//Sleep(2000);
 		std::cout << "Sender: Data is ready." << std::endl;
 		condVar.notify_one();
 	}

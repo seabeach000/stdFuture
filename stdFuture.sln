@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "friendTemplate", "friendTem
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "txtRead", "txtRead\txtRead.vcxproj", "{671554A8-AE8D-4C35-A69D-C875E828458B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avio_reading", "avio_reading\avio_reading.vcxproj", "{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -171,8 +173,19 @@ Global
 		{671554A8-AE8D-4C35-A69D-C875E828458B}.Release|x64.Build.0 = Release|x64
 		{671554A8-AE8D-4C35-A69D-C875E828458B}.Release|x86.ActiveCfg = Release|Win32
 		{671554A8-AE8D-4C35-A69D-C875E828458B}.Release|x86.Build.0 = Release|Win32
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Debug|x64.ActiveCfg = Debug|x64
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Debug|x64.Build.0 = Debug|x64
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Debug|x86.ActiveCfg = Debug|Win32
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Debug|x86.Build.0 = Debug|Win32
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Release|x64.ActiveCfg = Release|x64
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Release|x64.Build.0 = Release|x64
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Release|x86.ActiveCfg = Release|Win32
+		{785D7532-C2A1-4975-BB5B-BED05A4B6A7D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3601C5FF-04F2-4C23-8AF4-50EDD60EA2C9}
 	EndGlobalSection
 EndGlobal

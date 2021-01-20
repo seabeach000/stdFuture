@@ -27,9 +27,9 @@ struct Derived : public Base
 void thr(std::shared_ptr<Base> p)
 {
 	//直接传递shared_ptr，每次都会增加一个引用计数
-	//std::cout << " pointer in a thread:\n"
-	//	<< "  p.get() = " << p.get()
-	//	<< ", p.use_count() = " << p.use_count() << '\n';
+	std::cout << " pointer in a thread:\n"
+		<< "  p.get() = " << p.get()
+		<< ", p.use_count() = " << p.use_count() << '\n'; 
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	std::shared_ptr<Base> lp = p; // thread-safe, even though the
@@ -89,7 +89,7 @@ int main()
 			<< "  p.get() = " << p.get()
 			<< ", p.use_count() = " << p.use_count() << '\n';
 		std::thread t1(thr, p), t2(thr, p), t3(thr, p);
-		p.reset(); // release ownership from main
+		//p.reset(); // release ownership from main
 		t1.join(); t2.join(); t3.join();
 		std::cout << "Shared ownership between 3 threads and released\n"
 			<< "ownership from main:\n"

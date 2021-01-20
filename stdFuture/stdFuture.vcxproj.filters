@@ -87,6 +87,18 @@
     <ClInclude Include="dequeueW.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CThreadLocal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StackWalker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="disable_silly_warnings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stack_trace.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdFuture.cpp">
@@ -138,6 +150,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dequeueW.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CThreadLocal.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StackWalker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stack_trace.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

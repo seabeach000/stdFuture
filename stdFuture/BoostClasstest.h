@@ -19,5 +19,6 @@ public:
 	int hardware();
 	void boostFormatString();
 	void boostFileOperation();
+	void boostexception();
 };
 

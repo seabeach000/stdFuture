@@ -3,17 +3,15 @@
 
 #include "stdafx.h"
 
-//extern "C"
-//{
-//#define __STDC_CONSTANT_MACROS
-//#define __STDC_LIMIT_MACROS
-//#include <libavutil/timestamp.h>
-//#include <libavformat/avformat.h>
-//}
-
+extern "C"
+{
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
 #include <libavutil/timestamp.h>
-#include <libavutil/mathematics.h>
 #include <libavformat/avformat.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/file.h>
+}
 
 //c++编译环境不允许这样赋值 解决方案右键，属性c / c++那一列的高级，编译为c这个问题就能解决了
 //如果想要用c++编译就分开操作，先生成左值表达式再作为右值进行赋值 int a[2] = { 10,20 }; pt1 = a;
@@ -22,23 +20,61 @@
 //#define av_err2str(errnum) \
     //av_make_error_string(av_error, AV_ERROR_MAX_STRING_SIZE, errnum)
 
+struct buffer_data {
+	uint8_t *ptr;
+	size_t size; ///< size left in the buffer
+};
+
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt, const char *tag)
 {
 	AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
 
-	printf("%s: pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
-		tag,
-		av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
-		av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
-		av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
-		pkt->stream_index);
+	//printf("%s: pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
+	//	tag,
+	//	av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+	//	av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+	//	av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
+	//	pkt->stream_index);
 }
 
+static int read_packet(void *opaque, uint8_t *buf, int buf_size)
+{
+	struct buffer_data *bd = (struct buffer_data *)opaque;
+	buf_size = FFMIN(buf_size, bd->size);
+
+	if (!buf_size)
+		return AVERROR_EOF;
+	printf("ptr:%p size:%zu\n", bd->ptr, bd->size);
+
+	/* copy internal buffer data to buf */
+	memcpy(buf, bd->ptr, buf_size);
+	bd->ptr += buf_size;
+	bd->size -= buf_size;
+
+	return buf_size;
+}
 int main(int argc, char **argv)
 {
 	AVOutputFormat *ofmt = NULL;
 	AVFormatContext *ifmt_ctx = NULL, *ofmt_ctx = NULL;
 	AVPacket pkt;
+
+	//二、自定义释放器
+	//用如下方式使用带自定义资源释放的unique_ptr
+	//auto delete_Investment = [](Investment* pInv)
+	//{
+	//	pInv->getObjectType();
+	//	delete pInv;
+	//};
+	//unique_ptr<Investment, decltype(delete_Investment)> pInvest(nullptr, delete_Investment);
+	//或者也可以使用函数指针
+	//void deleteInv(Investment* pInv) {}
+	//std::unique_ptr<Investment, void(*)(Investment*)>ptr(nullptr, deleteInv);
+
+	//std::unique_ptr<AVPacket, std::function<void(AVPacket*)>> packet{
+	//			new AVPacket,
+	//			[](AVPacket* p) { av_packet_unref(p); delete p; } };
+
 	const char *in_filename, *out_filename;
 	int ret, i;
 	int stream_index = 0;
@@ -56,7 +92,51 @@ int main(int argc, char **argv)
 	in_filename = argv[1];
 	out_filename = argv[2];
 
-	if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, 0)) < 0) {
+	//wxg20201204
+	AVDictionary* options = nullptr;
+	//av_dict_set(&options, "rtbufsize", "655360", 0);
+	//av_dict_set(&options, "packetsize", "655360", 0);  //没找到相应的参数
+
+	/*
+	AVIOContext *avio_ctx = NULL;
+	uint8_t *buffer = NULL, *avio_ctx_buffer = NULL;
+	size_t buffer_size, avio_ctx_buffer_size = 32768*20;
+	struct buffer_data bd = { 0 };
+	ret = av_file_map(in_filename, &buffer, &buffer_size, 0, nullptr);
+	if (ret < 0)
+		goto end;
+	//* fill opaque structure used by the AVIOContext read callback 
+	bd.ptr = buffer;
+	bd.size = buffer_size;
+
+	if (!(ifmt_ctx = avformat_alloc_context())) {
+		ret = AVERROR(ENOMEM);
+		goto end;
+	}
+
+	avio_ctx_buffer = (uint8_t*)av_malloc(avio_ctx_buffer_size);
+	if (!avio_ctx_buffer) {
+		ret = AVERROR(ENOMEM);
+		goto end;
+	}
+
+	avio_ctx = avio_alloc_context(avio_ctx_buffer, avio_ctx_buffer_size,
+		0, &bd, &read_packet, NULL, NULL);
+	if (!avio_ctx) {
+		ret = AVERROR(ENOMEM);
+		goto end;
+	}
+	ifmt_ctx->pb = avio_ctx;
+	if ((ret = avformat_open_input(&ifmt_ctx, nullptr, 0, &options)) < 0) {
+		fprintf(stderr, "Could not open input file '%s'", in_filename);
+		goto end;
+	}
+	*/
+	//wxgend
+
+	av_log_set_level(AV_LOG_DEBUG);
+
+	if ((ret = avformat_open_input(&ifmt_ctx, in_filename, 0, &options)) < 0) {
 		fprintf(stderr, "Could not open input file '%s'", in_filename);
 		goto end;
 	}
@@ -182,7 +262,7 @@ end:
 	av_freep(&stream_mapping);
 
 	if (ret < 0 && ret != AVERROR_EOF) {
-		fprintf(stderr, "Error occurred: %s\n", av_err2str(ret));
+		//fprintf(stderr, "Error occurred: %s\n", av_err2str(ret));
 		return 1;
 	}
     return 0;

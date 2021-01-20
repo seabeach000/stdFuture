@@ -40,6 +40,9 @@ struct MediaData {
 	uint16_t		src_port_vanc;
 	int vpid_code = 133;
 };
+
+int CStaticTest::x = 100;
+
 CStaticTest::CStaticTest()
 {
 }
@@ -47,6 +50,7 @@ CStaticTest::CStaticTest()
 
 CStaticTest::~CStaticTest()
 {
+	std::cout << "~CStaticTest()" << std::endl;
 }
 
 void CStaticTest::localStatic(void)
@@ -54,6 +58,8 @@ void CStaticTest::localStatic(void)
 	static int i = 0;
 	std::cout << "i:" << i << '\n';
 	i++;
+	x++;
+	std::cout << "x:" << x << '\n';
 }
 
 void CStaticTest::mapTest()

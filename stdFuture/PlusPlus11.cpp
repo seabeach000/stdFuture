@@ -13,6 +13,9 @@
 #include <cctype>
 
 #include <unordered_map>
+#include <limits>
+
+#include "CThreadLocal.h"
 
 using namespace std;
 
@@ -201,6 +204,28 @@ void CPlusPlus11::generalTest()
 
 	int  speedvalue = (int)ceil(tmp + tmp4);
 	std::cout << speedvalue << endl;
+}
+
+void CPlusPlus11::exceptionTest()
+{
+	try
+	{
+		if (256 > numeric_limits<char>::infinity())
+		{
+			throw invalid_argument("MyFunc argument too large.");
+		}
+	}
+	catch (exception& e)
+	{
+		std::cout << e.what() << endl;
+	}
+
+}
+
+void CPlusPlus11::threadlocaltest()
+{
+	wwxxgg::threadlocal::ThreadLocal aa;
+	aa.test();
 }
 
 CPlusPlus11::CPlusPlus11()

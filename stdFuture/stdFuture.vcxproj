@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F0E3FE6A-6486-40E4-9D3D-50E28774EAAE}</ProjectGuid>
     <RootNamespace>stdFuture</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -205,7 +205,9 @@
     <ClInclude Include="BoostSharedMemory.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="ConditionVar.h" />
+    <ClInclude Include="CThreadLocal.h" />
     <ClInclude Include="dequeueW.h" />
+    <ClInclude Include="disable_silly_warnings.h" />
     <ClInclude Include="forwardlistW.h" />
     <ClInclude Include="Houjie.h" />
     <ClInclude Include="Lambdatest.h" />
@@ -213,6 +215,8 @@
     <ClInclude Include="PlusPlus11.h" />
     <ClInclude Include="receiver.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="StackWalker.h" />
+    <ClInclude Include="stack_trace.h" />
     <ClInclude Include="StaticTest.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="stdFuture.h" />
@@ -227,6 +231,7 @@
     <ClCompile Include="BoostClasstest.cpp" />
     <ClCompile Include="BoostSharedMemory.cpp" />
     <ClCompile Include="ConditionVar.cpp" />
+    <ClCompile Include="CThreadLocal.cpp" />
     <ClCompile Include="dequeueW.cpp" />
     <ClCompile Include="forwardlistW.cpp" />
     <ClCompile Include="Houjie.cpp" />
@@ -234,6 +239,11 @@
     <ClCompile Include="listW.cpp" />
     <ClCompile Include="PlusPlus11.cpp" />
     <ClCompile Include="receiver.cpp" />
+    <ClCompile Include="StackWalker.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</SDLCheck>
+    </ClCompile>
+    <ClCompile Include="stack_trace.cpp" />
     <ClCompile Include="StaticTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

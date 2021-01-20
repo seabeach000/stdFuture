@@ -376,6 +376,7 @@ void CstdFutureDlg::OnBnClickedButtonfunctor2()
 void CstdFutureDlg::OnBnClickedButtonBthread()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	m_BoostClassTest.boostexception();
 	//2020年3月27日10:55:24
 	m_BoostClassTest.boostFileOperation();
 	//wxg2019年8月9日09:33:11
@@ -414,14 +415,28 @@ void CstdFutureDlg::OnBnClickedButtonlambada()
 void CstdFutureDlg::OnBnClickedButtonStaticvariable()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CStaticTest staticVariableTest1;
-	staticVariableTest1.localStatic();
-	CStaticTest staticVariableTest2;
-	staticVariableTest2.localStatic();
 
-	//wxg20160928
-	staticVariableTest2.mapTest();
-	staticVariableTest2.vectorfuzhi();
+	std::cout << "xx: " << CStaticTest::x << std::endl;
+
+	{
+		CStaticTest staticVariableTest1;
+		staticVariableTest1.localStatic();
+		CStaticTest staticVariableTest2;
+		staticVariableTest2.localStatic();
+
+		//wxg20160928
+		staticVariableTest2.mapTest();
+		staticVariableTest2.vectorfuzhi();
+	}
+
+	std::cout << "xx: " << CStaticTest::x << std::endl;
+	//结果输出102，说明即使类析构了，类中的静态变量仍然存在，并且保留最后的值
+
+	{
+		CStaticTest staticVariableTest3;
+		staticVariableTest3.localStatic();
+	}
+	//结果输出103.，说明即使类析构了，类成员函数的局部静态变量仍然存在，并且保留最后的值
 }
 
 
@@ -434,6 +449,22 @@ void CstdFutureDlg::OnBnClickedButtoncplus()
 	var.mainTest();
 
 
+	//wxg20201207
+	int ret = [](int a, ...)
+	{
+
+		va_list pp;
+		va_start(pp, a);
+		do
+		{
+			std::cout << "param = " << a;
+			a = va_arg(pp, int); //使 pp 指向下一个参数，将下一个参数的值赋给变量 a
+
+		} while (a != 0);
+
+		return 0;
+	}(20,40,60,80,0);
+
 	///////////////////////////
 	CPlusPlus11 cllTest;
 	cllTest.stdmove();
@@ -442,6 +473,9 @@ void CstdFutureDlg::OnBnClickedButtoncplus()
 	cllTest.stdtime();
 	cllTest.overhide();
 	cllTest.generalTest();
+	cllTest.exceptionTest();
+	cllTest.threadlocaltest();
+
 }
 
 

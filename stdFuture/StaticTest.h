@@ -11,5 +11,7 @@ public:
 	void mapTest();
 	void vectorfuzhi();
 	void vectortest(MediaData &media_data);
+public:
+	static int x;
 };
 

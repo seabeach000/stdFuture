@@ -29,7 +29,10 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <boost/locale.hpp>
+
 #include "thread_specific_ptr.h"
+#include "stack_trace.h"
 
 CBoostClasstest::CBoostClasstest()
 {
@@ -489,6 +492,14 @@ void CBoostClasstest::boostFormatString()
 		"%1t 科学计数 = [%e]\n"
 	) % "example :\n" % 15 % 15 % 15 % 15 % 15 % 15.01 % 15.01 % 15.01 << endl;
 
+	uint8_t ui8AFDCode = 5;
+	bool bIs16by9AspectRatio = 1;
+	std::string strafd = (boost::format("          AFD code: 0x%x    16x9: %s")
+		% (int)ui8AFDCode
+		% (bIs16by9AspectRatio ? "true" : "false")).str();
+	cout << strafd << endl;
+//证明无符号数是不能按照%x输出的
+
 	//.net的风格  
 	cout << boost::format("%1%"
 		"%1t 十进制 = [%2$d]\n"
@@ -599,4 +610,56 @@ void CBoostClasstest::boostFileOperation()
 		}
 	}
 
+}
+
+struct caspar_exception : virtual boost::exception, virtual std::exception
+{
+	caspar_exception() {}
+	const char* what() const throw() override
+	{
+		return boost::diagnostic_information_what(*this);
+	}
+};
+
+typedef boost::error_info<struct tag_msg_info, std::string>	msg_info_t;
+typedef boost::error_info<struct tag_call_stack_info, std::string>	call_stack_info_t;
+
+template<typename T>
+inline msg_info_t			msg_info(const T& str) { return msg_info_t(u8(str)); }
+template<typename T>
+inline call_stack_info_t 	call_stack_info(const T& str) { return call_stack_info_t(u8(str)); }
+
+std::string u8(const std::wstring& str)
+{
+	return boost::locale::conv::utf_to_utf<char>(str);
+}
+//CASPAR_THROW_EXCEPTION(caspar_exception() << msg_info("Failed to allocate buffer."));
+
+void CBoostClasstest::boostexception()
+{
+	if (false)
+	{
+		try {
+			boost::exception_detail::throw_exception_((caspar_exception() << msg_info(L"Failed to allocate buffer.")) << call_stack_info(caspar::get_call_stack()), BOOST_THROW_EXCEPTION_CURRENT_FUNCTION, __FILE__, __LINE__);
+		}
+		catch (...)
+		{
+			wcout << caspar::get_call_stack() << endl;
+		}
+	}
+
+	auto fun = [this](std::string str) mutable ->std::wstring {
+		std::wstring  strW = boost::locale::conv::utf_to_utf<wchar_t>(str);
+		try {
+			boost::exception_detail::throw_exception_((caspar_exception() << msg_info(L"Thread test Failed to allocate buffer.")) << call_stack_info(caspar::get_call_stack()), BOOST_THROW_EXCEPTION_CURRENT_FUNCTION, __FILE__, __LINE__);
+		}
+		catch (...)
+		{
+			wcout << caspar::get_call_stack() << endl;
+		}
+		//wcout << caspar::get_call_stack() << endl;
+		return strW;
+	};
+	boost::thread th1(fun,"wxg test");
+	th1.join();
 }

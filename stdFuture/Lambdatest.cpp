@@ -3,6 +3,14 @@
 #include <vector>
 #include <memory>
 
+//下面代码是错误的，lambda不能访问静态存储变量
+//static int g_intVal = 1;
+//void S5_OutScope()
+//{
+//	auto outScope = [g_intVal] {std::cout << "Lambda: " << ++g_intVal << std::endl; };
+//	outScope();
+//}
+
 CLambdatest::CLambdatest():m_nData(20)
 {
 }
@@ -75,4 +83,27 @@ void CLambdatest::lambadaTest()
 	}
 
 	//std::shared_ptr<void> crt_log(nullptr, [](int h) { h = 5; });  //后面lambda是析构函数
+	
+	{
+		int x = 1;
+		int y = 1;
+		int z;
+		std::cout << "x1: " << x << "/t y1: " << y << std::endl;
+		z = [=]() mutable -> int
+		{
+			int n = x + y;
+			++x;
+			++y;
+			std::cout << "x2: " << x << "/t y2: " << y << std::endl;
+			return n;
+		}();
+		std::cout << "x3: " << x << "/t y3: " << y << std::endl;
+		std::cout << "z: " << z << std::endl;
+	}
+	{
+		int intValue = 0;
+		auto test2 = [=]() mutable {std::cout << "Lambda: " << ++intValue << std::endl; };
+		test2();
+		std::cout << "Out Lambda: " << intValue << std::endl;
+	}
 }
