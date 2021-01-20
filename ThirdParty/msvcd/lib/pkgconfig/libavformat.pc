@@ -1,13 +1,13 @@
-prefix=/home/wangxingang/wangxg20190527/ffmpeg/build
+prefix=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build
 exec_prefix=${prefix}
-libdir=/home/wangxingang/wangxg20190527/ffmpeg/build/lib
-includedir=/home/wangxingang/wangxg20190527/ffmpeg/build/include
+libdir=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build/lib
+includedir=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build/include
 
 Name: libavformat
 Description: FFmpeg container format library
-Version: 58.27.103
+Version: 58.29.100
 Requires: 
-Requires.private: libavcodec >= 58.52.102, libswresample >= 3.4.100, libavutil >= 56.28.100
+Requires.private: libavcodec >= 58.54.100, libswresample >= 3.5.100, libavutil >= 56.31.100
 Conflicts:
 Libs: -L${libdir}  -lavformat 
 Libs.private: secur32.lib ws2_32.lib

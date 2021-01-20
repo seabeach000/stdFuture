@@ -1,14 +1,14 @@
-prefix=/home/wangxingang/wangxg20190527/ffmpeg/build
+prefix=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build
 exec_prefix=${prefix}
-libdir=/home/wangxingang/wangxg20190527/ffmpeg/build/lib
-includedir=/home/wangxingang/wangxg20190527/ffmpeg/build/include
+libdir=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build/lib
+includedir=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build/include
 
 Name: libavcodec
 Description: FFmpeg codec library
-Version: 58.52.102
+Version: 58.54.100
 Requires: 
-Requires.private: libswresample >= 3.4.100, libavutil >= 56.28.100
+Requires.private: libswresample >= 3.5.100, libavutil >= 56.31.100
 Conflicts:
 Libs: -L${libdir}  -lavcodec 
-Libs.private: -libpath:/home/wangxingang/wangxg20190527/ffmpeg/build/lib libx264.lib -libpath:/home/wangxingang/wangxg20190527/ffmpeg/build/lib x265.lib ole32.lib user32.lib
+Libs.private: -libpath:/home/wangxingang/wxg20201202/ffmpeg/build/lib libx264.lib -libpath:/home/wangxingang/wxg20201202/ffmpeg/build/lib x265.lib ole32.lib user32.lib
 Cflags: -I${includedir}

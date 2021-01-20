@@ -1,11 +1,11 @@
-prefix=/home/wangxingang/wangxg20190527/ffmpeg/build
+prefix=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build
 exec_prefix=${prefix}
-libdir=/home/wangxingang/wangxg20190527/ffmpeg/build/lib
-includedir=/home/wangxingang/wangxg20190527/ffmpeg/build/include
+libdir=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build/lib
+includedir=/home/wangxingang/wxg20201202/ffmpeg/ffmpeg/build/include
 
 Name: libavutil
 Description: FFmpeg utility library
-Version: 56.28.100
+Version: 56.31.100
 Requires: 
 Requires.private: 
 Conflicts:
