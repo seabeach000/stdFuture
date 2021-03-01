@@ -37,9 +37,14 @@ public:
 	}
 
 	void mainTest();
+	void mainTest2();
+
+	void print_id(int id);
+	void go();
 private:
 	std::mutex mutex_;
 	std::condition_variable condVar;
 	bool dataReady = false;
+	bool ready = false;
 };
 
