@@ -28,7 +28,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem/operations.hpp>
-
+#include <boost/regex.hpp>
 #include <boost/locale.hpp>
 
 #include "thread_specific_ptr.h"
@@ -662,4 +662,155 @@ void CBoostClasstest::boostexception()
 	};
 	boost::thread th1(fun,"wxg test");
 	th1.join();
+}
+
+
+class regex_callback {
+	int sum_;
+public:
+	regex_callback() : sum_(0) {}
+
+	template <typename T> void operator()(const T& what) {
+		sum_ += atoi(what[1].str().c_str());
+	}
+
+	int sum() const {
+		return sum_;
+	}
+};
+
+void CBoostClasstest::boostOptionalregex()
+{
+	boost::regex reg("(A.*)");
+	bool b = boost::regex_match(
+		"This expression could match from A and beyond.",
+		reg);
+	// .通配符，它可以匹配任意字符，*重复符，表示它前面的表达式可以被重复一次或者多次。
+	//在这个例子中，结果是 false, 因为 regex_match 仅当整个输入数据被正则表达式成功匹配时才返回 true
+	
+
+
+	bool b1 = boost::regex_match(
+		"As this string starts with A, does it match? ",
+		reg);
+	//第一个字符是大写的 A, 很明显能够匹配.A 后跟一个通配符和一个Kleene star, 这意味着任意字符可以被匹配任意次。因而，分析过程开始扔掉输入字符串的剩余部分，即匹配了输入的所有部分
+
+
+	//对于数字，我们应该使用一个特别的缩写，\d。要表示它被重复3次，需要一个称为bounds operator的特定重复，它用花括号括起来。把这两个合起来，就是我们的正则表达式的开始部分了。
+	//注意，我们需要在转义字符(\)之前加一个转义字符，即在我们的字符串中，缩写 \d 变成了 \\d,这是因为编译器会把第一个\当成转义字符扔掉；我们需要对\进行转义，这样\才可以出现在我们的正则表达式中。
+	boost::regex reg1("\\d{3}");
+	bool b2 = boost::regex_match(
+		"123",
+		reg1);
+
+	bool b3 = boost::regex_match(
+		"1aa",
+		reg1);
+
+	boost::regex reg2("[a-zA-Z]+");  //重复符 +, 它表示前面的表达式可以重复，但至少重复一次
+	bool b4 = boost::regex_match(
+		"aassd",
+		reg2);
+	//但由于经常要表示一个单词，所以有一个更简单的方法：\w. 这个符号匹配所有单词，不仅是ASCII的单词，因此它不仅更短，而且也更适用于国际化的环境
+	//接下来的字符是一个任意字符，我们已经知道要用点来表示boost::regex reg(".");
+
+	//接下来是 2个数字或字符串 “N/A.” 为了匹配它我们需要用到一个称为选择的特性。选择即是匹配两个或更多子表达式中的任意一个，每种选择之间用 | 分隔开
+	boost::regex reg3("(\\d{2}|N/A)"); //注意，这个表达式被圆括号括了起来，以确保整个表达式被看作为两个选择
+
+	//在正则表达式中增加一个空格是很简单的；用缩写\s
+	boost::regex reg31("\\d{3}[a-zA-Z]+.(\\d{2}|N/A)\\s");
+
+	//这使得表达式([a - zA - Z] + )成为我们的正则表达式中的第一个子表达式，我们就可以用索引1来建立一个后向引用了
+	//这样，我们就得到了整个正则表达式，用于表示”3个数字, 一个单词, 任意字符, 2个数字或字符串”N/A,” 一个空格, 然后重复第一个单词.
+	boost::regex reg4("\\d{3}([a-zA-Z]+).(\\d{2}|N/A)\\s\\1");
+
+
+	// 3 digits, a word, any character, 2 digits or “N/A”, 
+	// a space, then the first word again 
+	std::string correct = "123Hello N/A Hello";
+	std::string incorrect = "123Hello 12 hello";
+	assert(boost::regex_match(correct,reg4)==true);
+	assert(boost::regex_match(incorrect,reg4)==false); 
+
+	{
+		boost::regex reg("(new)|(delete)");
+		boost::smatch m; 
+		std::string s = "Calls to new must be followed by delete. \ Calling simply new results in a leak!";
+		int new_counter = 0; int delete_counter = 0; 
+		std::string::const_iterator it = s.begin(); 
+		std::string::const_iterator end = s.end(); 
+		while (boost::regex_search(it, end, m, reg)) 
+		{ 
+			// 是 new 还是 delete?
+			m[1].matched ? ++new_counter : ++delete_counter; it=m[0].second;
+		} 
+		if (new_counter!=delete_counter) 
+			std::cout << "Leak detected!\n"; else std::cout << "Seems ok...\n";
+	}
+
+	//关于重复的贪婪。有些重复，如 + 和 *，是贪婪的。即是说，它们会消耗掉尽可能多的输入
+	{
+		boost::regex reg("(.*)(\\d{2})");
+		boost::cmatch m;
+		const char* text = "Note that I'm 31 years old, not 32.";
+		if (boost::regex_search(text, m, reg)) {
+			if (m[1].matched)
+				std::cout << "(.*) matched: " << m[1].str() << '\n';
+			if (m[2].matched)
+				std::cout << "Found the age: " << m[2] << '\n';
+		}
+
+		//如果你想使用重复并匹配另一个子表达式的第一次出现，该怎么办？要使用非贪婪的重复。在重复符后加一个 ? ，重复就变为非贪婪的了。这意味着该表达式会尝试发现最短的匹配可能而不再阻止表达式的剩余部分进行匹配。因此，要让前面的正则表达式正确工作，我们需要把它改为这样。
+		boost::regex reg1("(.*?)(\\d{2})");
+		if (boost::regex_search(text, m, reg1)) {
+			if (m[1].matched)
+				std::cout << "(.*) matched: " << m[1].str() << '\n';
+			if (m[2].matched)
+				std::cout << "Found the age: " << m[2] << '\n';
+		}
+	}
+
+
+	{
+		boost::regex reg("(\\d+),?");  //在正则表达式的最后加一个 ? (匹配零次或一次) 确保最后一个数字可以被成功分析,即使输入序列不是以逗号结束
+		//另外，我们还使用了另一个重复符 + .这个重复符表示匹配一次或多次
+
+		std::string s = "1,1,2,3,5,8,13,21";
+
+		boost::sregex_iterator it(s.begin(), s.end(), reg);
+		boost::sregex_iterator end;
+
+		regex_callback c;
+		int sum = for_each(it, end, c).sum();
+	}
+
+	//还有一个重复符，即是 ?. 你可能已经留意到它也可以用于声明非贪婪的重复，但对于它本身而言，
+	//它是表示一个表达式必须出现零次或一次
+
+	{
+		boost::regex reg1("\\d{5}");
+		boost::regex reg2("\\d{2,4}");
+		boost::regex reg3("\\d{2,}");
+		//第一个正则表达式匹配5个数字。第二个匹配 2个, 3个, 或者 4个数字。第三个匹配2个或更多个数字，没有上限。
+	}
+
+
+	std::string args_ = "-format mcmpegts -enpaddings 1 -rbitrate 7500000 -c:v h264_nvenc -preset fast -b:v 6500k -bufsize 3M -maxrate 6500k -minrate 6500k -cbr true  -color_range tv -color_primaries bt709 -color_trc bt709 -colorspace bt709 -flags +ildct+ilme+cgop  -coder 1 -profile 2 -bf 2 -g 30 -acodec mp2 -b:a 192k -ar 48000 -ac 2";
+	std::map<std::string, std::string> options;
+	options["abbc"]="bbb";
+
+	static boost::regex opt_exp("-(?<NAME>[^-\\s]+)(\\s+(?<VALUE>[^\\s]+))?");
+	for (auto it = boost::sregex_iterator(args_.begin(), args_.end(), opt_exp);
+		it != boost::sregex_iterator();
+		++it) {
+		options[(*it)["NAME"].str().c_str()] =
+			(*it)["VALUE"].matched ? (*it)["VALUE"].str().c_str() : "";
+	}
+
+	for (auto p:options)
+	{
+		std::cout << p.first << std::endl;
+	}
+
+
 }

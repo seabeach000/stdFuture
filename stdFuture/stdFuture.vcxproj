@@ -124,10 +124,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../Thirdparty/opencv/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../ThirdParty/opencv/x64/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_ts320d.lib;opencv_world320d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -201,6 +204,7 @@
     <ClInclude Include="..\utility\utf8conv.h" />
     <ClInclude Include="..\utility\utf8conv_inl.h" />
     <ClInclude Include="arrayW.h" />
+    <ClInclude Include="autodetect.h" />
     <ClInclude Include="BoostClasstest.h" />
     <ClInclude Include="BoostSharedMemory.h" />
     <ClInclude Include="common.h" />
@@ -228,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="arrayW.cpp" />
+    <ClCompile Include="autodetect.cpp" />
     <ClCompile Include="BoostClasstest.cpp" />
     <ClCompile Include="BoostSharedMemory.cpp" />
     <ClCompile Include="ConditionVar.cpp" />

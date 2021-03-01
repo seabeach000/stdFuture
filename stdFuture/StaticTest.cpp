@@ -75,6 +75,16 @@ void CStaticTest::mapTest()
 	student.insert(std::make_pair(2, _T("lisi")));
 	student.insert(std::make_pair(3, _T("wanger")));
 	student.insert(std::make_pair(4, _T("zhaowu")));
+	//还可以这样
+	student[5] = L"liuliu";
+
+	auto stu = student.begin();  //迭代器像一个指针一样
+	std::wstring ddd = stu->second;
+	student.erase(3);
+	for (auto &ss:student)
+	{
+		std::wcout << ss.first << L" " << ss.second.c_str();
+	}
 }
 
 

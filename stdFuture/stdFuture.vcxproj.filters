@@ -99,6 +99,9 @@
     <ClInclude Include="stack_trace.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="autodetect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdFuture.cpp">
@@ -159,6 +162,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="stack_trace.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="autodetect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

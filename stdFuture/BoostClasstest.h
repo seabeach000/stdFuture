@@ -20,5 +20,6 @@ public:
 	void boostFormatString();
 	void boostFileOperation();
 	void boostexception();
+	void boostOptionalregex();
 };
 
